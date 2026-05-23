@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem *)",
+      "PowerShell(npm *)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}
