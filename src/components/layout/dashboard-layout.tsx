@@ -1,6 +1,7 @@
 'use client'
 
 import { Sidebar } from './sidebar'
+import { OfflineStatusBar } from '@/components/shared/offline-status-bar'
 import type { UserRole } from '@/types'
 
 interface DashboardLayoutProps {
@@ -14,8 +15,11 @@ export function DashboardLayout({ children, role, tenantName, isSuperadmin }: Da
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar role={role} tenantName={tenantName} isSuperadmin={isSuperadmin} />
-      <main className="ml-60 flex-1 min-w-0">
-        {children}
+      <main className="ml-60 flex-1 min-w-0 flex flex-col">
+        <OfflineStatusBar />
+        <div className="flex-1">
+          {children}
+        </div>
       </main>
     </div>
   )

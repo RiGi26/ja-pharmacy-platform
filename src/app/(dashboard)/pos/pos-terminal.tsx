@@ -179,6 +179,15 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
       }
 
       toast.success(`Transaksi ${invoiceNumber} berhasil!`)
+
+      // Fire-and-forget low stock check
+      const soldMedicineIds = [...new Set(store.cart.map(i => i.medicine_id))]
+      fetch('/api/notifications/low-stock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tenantId, medicineIds: soldMedicineIds }),
+      }).catch(() => {})
+
       store.clearCart()
       setCheckoutMode(false)
     } catch (err) {

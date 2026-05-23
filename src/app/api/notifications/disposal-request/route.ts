@@ -1,0 +1,37 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+import { sendWhatsApp } from '@/lib/notifications/whatsapp'
+
+export async function POST(req: NextRequest) {
+  const { tenantId, type, medicineName, quantity, reason } = await req.json()
+  const supabase = await createClient()
+
+  const [configRes, tenantRes, recipientsRes] = await Promise.all([
+    supabase.from('tenant_configs').select('wa_token').eq('tenant_id', tenantId).single(),
+    supabase.from('tenants').select('name').eq('id', tenantId).single(),
+    supabase.from('user_profiles').select('phone').eq('tenant_id', tenantId)
+      .in('role', ['owner', 'admin']).eq('is_active', true),
+  ])
+
+  if (!configRes.data?.wa_token) return NextResponse.json({ ok: true })
+
+  const typeLabel = type === 'DESTRUCTION' ? '🔥 Pemusnahan' : '↩️ Retur ke Distributor'
+
+  const msg = [
+    `⚠️ *[${tenantRes.data?.name}] Pengajuan ${typeLabel}*`,
+    ``,
+    `Obat: *${medicineName}*`,
+    `Jumlah: ${quantity}`,
+    `Alasan: ${reason}`,
+    ``,
+    `Segera setujui atau tolak di aplikasi.`,
+    ``,
+    `_Japan Arena Pharmacy_`,
+  ].join('\n')
+
+  for (const r of recipientsRes.data ?? []) {
+    if (r.phone) await sendWhatsApp({ target: r.phone, message: msg, token: configRes.data.wa_token })
+  }
+
+  return NextResponse.json({ ok: true })
+}

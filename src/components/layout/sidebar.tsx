@@ -7,7 +7,7 @@ import type { UserRole } from '@/types'
 import {
   LayoutDashboard, Pill, Package, ShoppingCart, FileText,
   BarChart2, Settings, Users, AlertTriangle, LogOut,
-  Building2, ChevronRight,
+  Building2, ChevronRight, Recycle, ClipboardList,
 } from 'lucide-react'
 
 interface NavItem {
@@ -25,6 +25,8 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Monitoring Exp.', href: '/expiry',        icon: AlertTriangle,   roles: ['superadmin','owner','admin','apoteker'] },
   { label: 'Kasir (POS)',    href: '/pos',            icon: ShoppingCart,    roles: ['superadmin','admin','apoteker','kasir'] },
   { label: 'Resep',          href: '/prescriptions',  icon: FileText,        roles: ['superadmin','admin','apoteker'] },
+  { label: 'Stok Opname',    href: '/stock-opname',   icon: ClipboardList,   roles: ['superadmin','admin','apoteker'] },
+  { label: 'Retur & Musnah', href: '/disposals',      icon: Recycle,         roles: ['superadmin','admin','apoteker'] },
   { label: 'Laporan',        href: '/reports',        icon: BarChart2,       roles: ['superadmin','owner','admin'] },
   { label: 'Pengguna',       href: '/users',          icon: Users,           roles: ['superadmin','owner'] },
   { label: 'Pengaturan',     href: '/settings',       icon: Settings,        roles: ['superadmin','owner'] },
