@@ -3,7 +3,14 @@
     "allow": [
       "Bash(Get-ChildItem *)",
       "PowerShell(npm *)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "PowerShell(New-Item *)",
+      "Bash(npm list *)",
+      "Bash(npx tsc *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(git commit *)"
     ]
   }
 }
