@@ -26,7 +26,7 @@ export default async function InventoryPage() {
     .from('medicine_batches')
     .select('*, medicines(name, unit, category, barcode)', { count: 'exact' })
     .eq('tenant_id', profile.tenant_id)
-    .not('status', 'in', '("DISPOSED","RETURNED","EMPTY")')
+    .not('status', 'in', '(DISPOSED,RETURNED,EMPTY)')
     .gt('quantity', 0)
     .order('expiry_date', { ascending: true })
     .limit(100)

@@ -22,7 +22,7 @@ export default async function NewStockOpnamePage() {
     .from('medicine_batches')
     .select('id, batch_number, quantity, expiry_date, medicine_id, medicines(name, unit)')
     .eq('tenant_id', profile.tenant_id)
-    .not('status', 'in', '("DISPOSED","RETURNED","EMPTY")')
+    .not('status', 'in', '(DISPOSED,RETURNED,EMPTY)')
     .order('medicine_id')
     .order('expiry_date')
 

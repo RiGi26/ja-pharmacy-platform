@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     .select('medicine_id, quantity, medicines(name, min_stock)')
     .in('medicine_id', medicineIds)
     .eq('tenant_id', tenantId)
-    .not('status', 'in', '("DISPOSED","RETURNED","EMPTY")')
+    .not('status', 'in', '(DISPOSED,RETURNED,EMPTY)')
 
   if (!stockData) return NextResponse.json({ ok: true })
 

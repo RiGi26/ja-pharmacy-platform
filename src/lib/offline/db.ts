@@ -36,7 +36,7 @@ export interface CachedMedicine {
   hpp: number
   sell_price: number
   unit: string
-  requires_prescription: boolean
+  is_prescription: boolean
   batches: CachedBatch[]
   cached_at: string
 }

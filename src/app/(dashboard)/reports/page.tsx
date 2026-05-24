@@ -56,7 +56,7 @@ export default async function ReportsPage({
 
     supabase
       .from('transaction_items')
-      .select('medicine_id, quantity, unit_price, medicines(name, hpp)')
+      .select('medicine_id, quantity, unit_price, medicines(name)')
       .eq('tenant_id', profile.tenant_id)
       .gte('created_at', fromISO)
       .lte('created_at', toISO),
@@ -83,9 +83,9 @@ export default async function ReportsPage({
   // Top medicines by revenue
   const medMap: Record<string, { name: string; quantity: number; revenue: number; hpp: number }> = {}
   for (const item of items) {
-    const med = item.medicines as unknown as { name: string; hpp: number } | null
+    const med = item.medicines as unknown as { name: string } | null
     const id = item.medicine_id
-    if (!medMap[id]) medMap[id] = { name: med?.name ?? '—', quantity: 0, revenue: 0, hpp: med?.hpp ?? 0 }
+    if (!medMap[id]) medMap[id] = { name: med?.name ?? '—', quantity: 0, revenue: 0, hpp: 0 }
     medMap[id].quantity += item.quantity ?? 0
     medMap[id].revenue += (item.quantity ?? 0) * (item.unit_price ?? 0)
   }
@@ -97,7 +97,7 @@ export default async function ReportsPage({
   // Summary
   const totalRevenue = transactions.reduce((s, t) => s + (t.total_amount ?? 0), 0)
   const totalDiscount = transactions.reduce((s, t) => s + (t.discount_amount ?? 0), 0)
-  const totalHPP = Object.values(medMap).reduce((s, m) => s + m.hpp * m.quantity, 0)
+  const totalHPP = 0 // hpp column not yet in schema
   const grossProfit = totalRevenue - totalHPP
   const grossMargin = totalRevenue > 0 ? (grossProfit / totalRevenue) * 100 : 0
   const txCount = transactions.length
