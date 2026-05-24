@@ -4,14 +4,14 @@ import { cn } from '@/lib/utils'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-interface Column<T> {
+export interface Column<T extends object> {
   key: string
   header: string
   render?: (row: T) => React.ReactNode
   className?: string
 }
 
-interface DataTableProps<T> {
+interface DataTableProps<T extends object> {
   data: T[]
   columns: Column<T>[]
   keyField: keyof T
@@ -23,7 +23,7 @@ interface DataTableProps<T> {
   onRowClick?: (row: T) => void
 }
 
-export function DataTable<T extends Record<string, unknown>>({
+export function DataTable<T extends object>({
   data, columns, keyField, loading, emptyMessage = 'Tidak ada data',
   page, totalPages, onPageChange, onRowClick,
 }: DataTableProps<T>) {
@@ -75,7 +75,7 @@ export function DataTable<T extends Record<string, unknown>>({
                 >
                   {columns.map(col => (
                     <td key={col.key} className={cn('px-4 py-3 text-gray-700', col.className)}>
-                      {col.render ? col.render(row) : String(row[col.key] ?? '')}
+                      {col.render ? col.render(row) : String((row as Record<string, unknown>)[col.key] ?? '')}
                     </td>
                   ))}
                 </tr>

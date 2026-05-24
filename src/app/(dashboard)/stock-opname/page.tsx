@@ -1,10 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { PageHeader } from '@/components/layout/page-header'
-import { DataTable } from '@/components/shared/data-table'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { formatDateTime, formatCurrency } from '@/lib/utils'
+import { StockOpnameTable } from './stock-opname-table'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
 
@@ -63,45 +61,6 @@ export default async function StockOpnamePage() {
     totalAdj: s.adjustments.reduce((sum, a) => sum + a.qty, 0),
   }))
 
-  const columns = [
-    {
-      key: 'date',
-      header: 'Tanggal',
-      render: (row: Record<string, unknown>) => (
-        <span className="text-sm">{formatDateTime(String(row.date))}</span>
-      ),
-    },
-    {
-      key: 'id',
-      header: 'Sesi',
-      render: (row: Record<string, unknown>) => (
-        <span className="text-xs font-mono text-gray-500">{String(row.id).slice(0, 30)}</span>
-      ),
-    },
-    {
-      key: 'count',
-      header: 'Jumlah Batch',
-      render: (row: Record<string, unknown>) => (
-        <Badge variant="secondary">{String(row.count)} batch</Badge>
-      ),
-    },
-    {
-      key: 'totalAdj',
-      header: 'Total Selisih',
-      render: (row: Record<string, unknown>) => {
-        const v = Number(row.totalAdj)
-        return <span className={`font-semibold ${v >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>{v > 0 ? '+' : ''}{v}</span>
-      },
-    },
-    {
-      key: 'by',
-      header: 'Dilakukan Oleh',
-      render: (row: Record<string, unknown>) => (
-        <span className="text-sm text-gray-600">{String(row.by)}</span>
-      ),
-    },
-  ]
-
   return (
     <div className="p-6 max-w-5xl mx-auto">
       <PageHeader title="Stok Opname" description="Rekonsiliasi fisik vs sistem">
@@ -109,12 +68,7 @@ export default async function StockOpnamePage() {
           <Button size="sm"><Plus className="w-4 h-4" />Mulai Opname Baru</Button>
         </Link>
       </PageHeader>
-      <DataTable
-        data={sessionList as unknown as Record<string, unknown>[]}
-        columns={columns}
-        keyField="id"
-        emptyMessage="Belum ada riwayat stok opname"
-      />
+      <StockOpnameTable sessions={sessionList} />
     </div>
   )
 }
