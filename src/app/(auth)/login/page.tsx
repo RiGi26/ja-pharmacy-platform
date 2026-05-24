@@ -1,6 +1,7 @@
 import { LoginForm } from './login-form'
-import { Pill } from 'lucide-react'
+import { Pill, Home } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function LoginPage() {
   return (
@@ -8,17 +9,28 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-10">
-          <div className="mb-6">
-            <Image 
-              src="/images/Icon.png" 
-              alt="Japan Arena Corp" 
-              width={64} 
-              height={64} 
-              className="object-contain"
-            />
-          </div>
-          <h1 className="text-2xl font-black text-gray-900 tracking-tight sf-display-heavy">Japan Arena <span className="text-blue-600">Pharmacy</span></h1>
-          <p className="text-[10px] font-bold text-gray-400 mt-2 uppercase tracking-[0.2em]">SaaS Cloud Infrastructure</p>
+          <Link 
+            href="https://ja-landingpage-platform.vercel.app" 
+            className="group flex flex-col items-center gap-4 transition-all"
+            title="Kembali ke Portal Utama"
+          >
+            <div className="relative">
+              <Image 
+                src="/images/Icon.png" 
+                alt="Japan Arena Corp" 
+                width={64} 
+                height={64} 
+                className="object-contain group-hover:scale-110 transition-transform duration-500"
+              />
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 text-white text-[9px] px-2 py-0.5 rounded-full whitespace-nowrap pointer-events-none">
+                Kembali ke Beranda
+              </div>
+            </div>
+            <div className="text-center">
+              <h1 className="text-2xl font-black text-gray-900 tracking-tight sf-display-heavy">Japan Arena <span className="text-blue-600">Pharmacy</span></h1>
+              <p className="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-[0.2em]">SaaS Cloud Infrastructure</p>
+            </div>
+          </Link>
         </div>
 
         {/* Form card */}
