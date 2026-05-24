@@ -17,8 +17,8 @@ export function LoginForm() {
 
   async function handleDemoLogin() {
     setLoading(true)
-    const demoEmail = 'demo@japanarena.com'
-    const demoPassword = 'password123'
+    const demoEmail = 'owner@demo.com'
+    const demoPassword = 'Demo@1234'
     
     setEmail(demoEmail)
     setPassword(demoPassword)
