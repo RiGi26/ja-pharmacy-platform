@@ -2,7 +2,14 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   experimental: {
-    serverActions: { allowedOrigins: ['localhost:3000'] },
+    serverActions: {
+      allowedOrigins: [
+        'localhost:3000',
+        'japanarenacorp.com',
+        '*.japanarenacorp.com',
+        '*.vercel.app',
+      ],
+    },
   },
   images: {
     domains: ['japanarenacorp.com'],
