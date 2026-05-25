@@ -40,13 +40,15 @@ export function DashboardLayout({ children, role, tenantName, isSuperadmin }: Da
         mobileOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <Sidebar role={role} tenantName={tenantName} isSuperadmin={isSuperadmin} />
-        {/* Mobile Close Button */}
-        <button 
-          onClick={() => setMobileOpen(false)}
-          className="lg:hidden absolute top-4 -right-12 p-2.5 bg-white text-gray-900 rounded-full shadow-xl border border-black/5 active:scale-90 transition-transform"
-        >
-          <X size={20} />
-        </button>
+        {/* Mobile Close Button - Only show when open to avoid blocking header buttons */}
+        {mobileOpen && (
+          <button 
+            onClick={() => setMobileOpen(false)}
+            className="lg:hidden absolute top-4 -right-12 p-2.5 bg-white text-gray-900 rounded-full shadow-xl border border-black/5 active:scale-90 transition-transform"
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
 
       {/* Main Content */}
