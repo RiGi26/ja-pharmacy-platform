@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { BatchStatusBadge } from '@/components/shared/batch-status-badge'
 import {
   ShoppingCart, Trash2, Plus, Minus, ScanLine,
-  CreditCard, Banknote, QrCode, Receipt, AlertCircle,
+  CreditCard, Banknote, QrCode, Receipt, AlertCircle, Loader2,
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import type { BatchStatus } from '@/types'
@@ -198,60 +198,58 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
   }
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 overflow-hidden">
+    <div className="h-[calc(100vh-140px)] md:h-[calc(100vh-180px)] lg:h-[calc(100vh-120px)] flex flex-col bg-gray-50 overflow-hidden rounded-2xl md:rounded-[32px] border border-black/[0.04] shadow-sm font-sans">
       {/* Header */}
       <div className="bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2">
           <ScanLine className="w-5 h-5 text-blue-600" />
-          <span className="font-semibold text-gray-900">POS Kasir</span>
-          <span className="text-xs text-gray-400">— {cashierName}</span>
+          <span className="font-bold text-gray-900 sf-display tracking-tight">POS Kasir</span>
+          <span className="hidden sm:inline text-xs text-gray-400">— {cashierName}</span>
         </div>
-        {lastScan && <span className="text-xs text-gray-400 font-mono">Last scan: {lastScan}</span>}
-        <div className="text-xs text-gray-400">
-          {store.cart.length} item · {formatCurrency(store.total)}
+        <div className="flex items-center gap-3">
+          {lastScan && <span className="hidden md:inline text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded-lg font-mono tracking-tighter">Last: {lastScan}</span>}
+          <div className="text-xs font-black text-gray-900">
+            {formatCurrency(store.total)}
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
         {/* Cart */}
-        <div className="flex-1 overflow-y-auto p-4">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:border-r border-gray-100">
           {store.cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full text-gray-300">
-              <ShoppingCart className="w-16 h-16 mb-3" />
-              <p className="text-sm font-medium">Scan barcode untuk tambah obat</p>
-              <p className="text-xs mt-1">atau tekan barcode scanner</p>
+            <div className="flex flex-col items-center justify-center h-full text-gray-300 py-10">
+              <ShoppingCart className="w-12 h-12 mb-3 opacity-20" />
+              <p className="text-sm font-bold text-gray-400 sf-display">Belum ada item</p>
+              <p className="text-[10px] mt-1 font-medium text-gray-400 uppercase tracking-wider">Scan barcode atau pilih obat</p>
             </div>
           ) : (
             <div className="space-y-2 max-w-2xl mx-auto">
               {store.cart.map(item => (
-                <div key={item.batch_id} className="bg-white rounded-xl border border-gray-100 p-3 flex items-center gap-3">
+                <div key={item.batch_id} className="bg-white rounded-2xl border border-gray-100 p-3 flex items-center gap-3 shadow-sm hover:border-blue-200 transition-colors group">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-900 text-sm truncate">{item.name}</p>
-                      {item.batch_status === 'WARNING' && (
-                        <BatchStatusBadge status={item.batch_status as BatchStatus} />
-                      )}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <p className="font-bold text-gray-900 text-sm truncate">{item.name}</p>
                       {item.is_prescription && (
-                        <span className="text-[10px] bg-orange-50 text-orange-600 px-1.5 py-0.5 rounded-full font-semibold">Resep</span>
+                        <span className="text-[9px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded-full font-black uppercase tracking-tighter">Resep</span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-400 mt-0.5">
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tight mt-0.5">
                       {formatCurrency(item.unit_price)} / {item.unit}
-                      {item.discount_pct > 0 && <span className="ml-1 text-green-600">Diskon {item.discount_pct}%</span>}
                     </p>
                   </div>
 
                   {/* Qty controls */}
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     <Button
-                      variant="outline" size="icon" className="h-7 w-7"
+                      variant="outline" size="icon" className="h-8 w-8 rounded-xl border-gray-100 hover:bg-gray-50 active:scale-90"
                       onClick={() => store.updateQty(item.batch_id, item.quantity - 1)}
                     >
                       <Minus className="w-3 h-3" />
                     </Button>
-                    <span className="w-8 text-center text-sm font-semibold">{item.quantity}</span>
+                    <span className="w-6 text-center text-sm font-black sf-display">{item.quantity}</span>
                     <Button
-                      variant="outline" size="icon" className="h-7 w-7"
+                      variant="outline" size="icon" className="h-8 w-8 rounded-xl border-gray-100 hover:bg-gray-50 active:scale-90"
                       onClick={() => store.updateQty(item.batch_id, item.quantity + 1)}
                       disabled={item.quantity >= item.max_qty}
                     >
@@ -259,15 +257,15 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
                     </Button>
                   </div>
 
-                  <div className="text-right w-24 flex-shrink-0">
-                    <p className="font-semibold text-sm text-gray-900">{formatCurrency(item.subtotal)}</p>
+                  <div className="text-right hidden sm:block w-20 flex-shrink-0">
+                    <p className="font-black text-sm text-gray-900">{formatCurrency(item.subtotal)}</p>
                   </div>
 
                   <Button
-                    variant="ghost" size="icon" className="h-7 w-7 text-gray-300 hover:text-red-500"
+                    variant="ghost" size="icon" className="h-8 w-8 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
                     onClick={() => store.removeItem(item.batch_id)}
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-4 h-4" />
                   </Button>
                 </div>
               ))}
@@ -276,49 +274,34 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
         </div>
 
         {/* Checkout Panel */}
-        <div className="w-80 bg-white border-l border-gray-100 flex flex-col flex-shrink-0">
-          <div className="p-4 border-b border-gray-100">
-            <h2 className="font-semibold text-gray-800 flex items-center gap-2">
-              <Receipt className="w-4 h-4" />
+        <div className="h-[45%] lg:h-auto lg:w-80 bg-white border-t lg:border-t-0 flex flex-col flex-shrink-0 shadow-[0_-8px_30px_rgb(0,0,0,0.04)] lg:shadow-none">
+          <div className="p-4 border-b border-gray-100 hidden lg:block">
+            <h2 className="font-bold text-gray-900 flex items-center gap-2 sf-display uppercase text-xs tracking-[0.2em]">
+              <Receipt className="w-4 h-4 text-blue-600" />
               Pembayaran
             </h2>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {/* Summary */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-sm text-gray-500">
+            <div className="space-y-1.5 bg-gray-50 p-4 rounded-2xl border border-black/[0.02]">
+              <div className="flex justify-between text-[10px] font-black text-gray-400 uppercase tracking-widest">
                 <span>Subtotal</span><span>{formatCurrency(store.subtotal)}</span>
               </div>
               {store.discount > 0 && (
-                <div className="flex justify-between text-sm text-green-600">
+                <div className="flex justify-between text-[10px] font-black text-green-600 uppercase tracking-widest">
                   <span>Diskon</span><span>-{formatCurrency(store.discount)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-base font-bold text-gray-900 pt-1.5 border-t border-gray-100">
+              <div className="flex justify-between text-lg font-black text-gray-900 pt-2 border-t border-black/[0.05] mt-2 sf-display">
                 <span>Total</span><span>{formatCurrency(store.total)}</span>
               </div>
             </div>
 
-            {/* Prescription number if needed */}
-            {store.hasRequiresPrescription && (
-              <div>
-                <label className="block text-xs font-semibold text-orange-500 mb-1.5 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" /> Nomor Resep *
-                </label>
-                <Input
-                  placeholder="R/ ..."
-                  value={store.prescriptionNumber}
-                  onChange={e => store.setPrescriptionNumber(e.target.value)}
-                  className="border-orange-200 focus:ring-orange-400"
-                />
-              </div>
-            )}
-
             {/* Payment method */}
             <div>
-              <p className="text-xs font-semibold text-gray-500 mb-2">Metode Bayar</p>
-              <div className="grid grid-cols-3 gap-1.5">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3 ml-1">Metode Bayar</p>
+              <div className="grid grid-cols-3 gap-2">
                 {([
                   { key: 'cash', label: 'Tunai', icon: Banknote },
                   { key: 'qris', label: 'QRIS', icon: QrCode },
@@ -327,14 +310,14 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
                   <button
                     key={m.key}
                     onClick={() => store.setPaymentMethod(m.key)}
-                    className={`flex flex-col items-center gap-1 p-2.5 rounded-xl border text-xs font-medium transition-colors ${
+                    className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border transition-all duration-300 ${
                       store.paymentMethod === m.key
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-200 scale-[1.02]'
+                        : 'bg-white text-gray-500 border-gray-100 hover:border-blue-200 active:scale-95'
                     }`}
                   >
                     <m.icon className="w-4 h-4" />
-                    {m.label}
+                    <span className="text-[10px] font-black uppercase tracking-wider">{m.label}</span>
                   </button>
                 ))}
               </div>
@@ -342,53 +325,64 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
 
             {/* Cash input */}
             {store.paymentMethod === 'cash' && (
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1.5">Uang Diterima</label>
-                <Input
-                  type="number"
-                  min={store.total}
-                  step={1000}
-                  value={store.paidAmount || ''}
-                  onChange={e => store.setPaidAmount(Number(e.target.value))}
-                  placeholder={String(store.total)}
-                />
+              <div className="animate-in slide-in-from-top-2 duration-300 space-y-3">
+                <div>
+                  <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 ml-1">Uang Diterima</label>
+                  <Input
+                    type="number"
+                    min={store.total}
+                    step={1000}
+                    value={store.paidAmount || ''}
+                    onChange={e => store.setPaidAmount(Number(e.target.value))}
+                    placeholder={String(store.total)}
+                    className="h-12 rounded-xl border-gray-100 font-bold focus:ring-blue-500 shadow-sm"
+                  />
+                </div>
                 {store.paidAmount >= store.total && (
-                  <div className="mt-2 p-2 bg-green-50 rounded-lg text-sm font-semibold text-green-700">
-                    Kembalian: {formatCurrency(store.change)}
+                  <div className="p-3 bg-green-50 rounded-xl text-xs font-bold text-green-700 border border-green-100 flex justify-between items-center shadow-inner">
+                    <span>Kembalian:</span>
+                    <span className="text-sm font-black">{formatCurrency(store.change)}</span>
                   </div>
                 )}
-                {/* Quick cash buttons */}
-                <div className="grid grid-cols-3 gap-1 mt-2">
-                  {[store.total, Math.ceil(store.total / 10000) * 10000, Math.ceil(store.total / 50000) * 50000].map(v => (
-                    <button
-                      key={v}
-                      onClick={() => store.setPaidAmount(v)}
-                      className="text-xs py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium"
-                    >
-                      {formatCurrency(v)}
-                    </button>
-                  ))}
-                </div>
+              </div>
+            )}
+
+            {/* Prescription number if needed */}
+            {store.hasRequiresPrescription && (
+              <div className="animate-in slide-in-from-top-2 duration-300">
+                <label className="block text-[10px] font-black text-red-500 uppercase tracking-[0.2em] mb-2 ml-1 flex items-center gap-1">
+                  <AlertCircle className="w-3 h-3" /> Nomor Resep *
+                </label>
+                <Input
+                  placeholder="R/ ..."
+                  value={store.prescriptionNumber}
+                  onChange={e => store.setPrescriptionNumber(e.target.value)}
+                  className="h-12 rounded-xl border-red-100 bg-red-50/30 focus:ring-red-500 font-bold shadow-sm"
+                />
               </div>
             )}
           </div>
 
           {/* Action buttons */}
-          <div className="p-4 border-t border-gray-100 space-y-2">
+          <div className="p-4 border-t border-gray-100 space-y-2 bg-white">
             <Button
-              className="w-full h-12 text-base"
+              className="w-full h-14 text-sm font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-blue-100 bg-blue-600 hover:bg-blue-700 active:scale-95 transition-all"
               onClick={handleCheckout}
               disabled={processing || store.cart.length === 0}
             >
-              {processing ? 'Memproses...' : `Bayar ${formatCurrency(store.total)}`}
+              {processing ? (
+                 <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                `Bayar ${formatCurrency(store.total)}`
+              )}
             </Button>
             <Button
-              variant="outline"
-              className="w-full"
+              variant="ghost"
+              className="w-full h-10 text-[10px] font-bold text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl"
               onClick={() => store.clearCart()}
               disabled={store.cart.length === 0}
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-3 h-3 mr-1" />
               Batal Transaksi
             </Button>
           </div>
@@ -396,4 +390,5 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
       </div>
     </div>
   )
+
 }

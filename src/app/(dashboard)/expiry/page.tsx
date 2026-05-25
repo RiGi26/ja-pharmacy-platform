@@ -15,13 +15,14 @@ export default async function ExpiryPage() {
     .single()
   if (!profile) redirect('/login')
 
+  const thresholdDate = new Date(new Date().getTime() + 180 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
   const { data: batches } = await supabase
     .from('medicine_batches')
     .select('*, medicines(name, unit, category)')
-    .eq('tenant_id', profile.tenant_id)
+    .eq('tenant_id', tenantId)
     .in('status', ['WARNING', 'DILARANG_JUAL', 'LAYAK_JUAL'])
     .gt('quantity', 0)
-    .lte('expiry_date', new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10))
+    .lte('expiry_date', thresholdDate)
     .order('expiry_date', { ascending: true })
 
   return (

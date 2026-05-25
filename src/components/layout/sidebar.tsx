@@ -50,7 +50,7 @@ export function Sidebar({ role, tenantName, isSuperadmin }: SidebarProps) {
   const items = isSuperadmin ? SUPERADMIN_ITEMS : NAV_ITEMS.filter(i => i.roles.includes(role))
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-50 w-60 flex flex-col bg-white border-r border-black/[0.03] apple-shadow">
+    <aside className="h-full w-64 flex flex-col bg-white border-r border-black/[0.03] apple-shadow overflow-hidden">
       {/* Header */}
       <div className="px-4 py-8 border-b border-black/[0.03]">
         <div className="flex flex-col items-center text-center gap-3">

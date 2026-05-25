@@ -126,13 +126,13 @@ export function MedicineList({ medicines, totalPages, page, canWrite }: Props) {
   ]
 
   return (
-    <div>
+    <div className="space-y-4">
       {/* Filters */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="relative flex-1 max-w-sm">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-2 sm:mb-6">
+        <div className="relative flex-1 sm:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
-            placeholder="Cari nama obat atau barcode..."
+            placeholder="Cari nama atau barcode..."
             value={search}
             onChange={e => {
               setSearch(e.target.value)
@@ -140,11 +140,11 @@ export function MedicineList({ medicines, totalPages, page, canWrite }: Props) {
                 setTimeout(() => updateQuery('q', e.target.value), 300)
               }
             }}
-            className="pl-9"
+            className="pl-9 h-11 rounded-xl"
           />
         </div>
         <select
-          className="h-10 px-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="h-11 px-4 rounded-xl border border-gray-200 bg-white text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
           value={searchParams.get('drug_class') ?? ''}
           onChange={e => updateQuery('drug_class', e.target.value)}
         >

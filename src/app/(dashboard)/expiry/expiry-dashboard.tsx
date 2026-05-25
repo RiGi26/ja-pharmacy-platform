@@ -112,7 +112,7 @@ export function ExpiryDashboard({ batches }: { batches: Batch[] }) {
   return (
     <div>
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <StatCard title="Dilarang Jual" value={dilarang.length} subtitle="batch" icon={Ban} iconColor="text-red-500" iconBg="bg-red-50" />
         <StatCard title="Warning (H-90)" value={warning.length} subtitle="batch" icon={AlertTriangle} iconColor="text-amber-500" iconBg="bg-amber-50" />
         <StatCard title="H-180" value={h180.length} subtitle="batch perlu perhatian" icon={Clock} iconColor="text-blue-500" iconBg="bg-blue-50" />
