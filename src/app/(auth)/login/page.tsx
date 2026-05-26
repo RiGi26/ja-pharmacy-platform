@@ -35,7 +35,7 @@ export default function LoginPage() {
 
         {/* Form card */}
         <div className="bg-white rounded-[32px] border border-black/[0.03] apple-shadow p-10">
-          <h2 className="text-lg font-bold text-gray-900 mb-1">Masuk ke Portal</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-1">Login ke Portal</h2>
           <p className="text-sm text-gray-500 mb-8">Silakan login untuk mengelola operasional apotek Anda.</p>
           <LoginForm />
         </div>
