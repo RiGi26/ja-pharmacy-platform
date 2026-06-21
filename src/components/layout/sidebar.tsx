@@ -9,7 +9,6 @@ import {
   BarChart2, Settings, Users, AlertTriangle, LogOut,
   Building2, ChevronRight, Recycle, ClipboardList,
 } from 'lucide-react'
-import Image from 'next/image'
 
 interface NavItem {
   label: string
@@ -40,11 +39,10 @@ const SUPERADMIN_ITEMS: NavItem[] = [
 
 interface SidebarProps {
   role: UserRole
-  tenantName?: string
   isSuperadmin?: boolean
 }
 
-export function Sidebar({ role, tenantName, isSuperadmin }: SidebarProps) {
+export function Sidebar({ role, isSuperadmin }: SidebarProps) {
   const pathname = usePathname()
 
   const items = isSuperadmin ? SUPERADMIN_ITEMS : NAV_ITEMS.filter(i => i.roles.includes(role))
@@ -52,26 +50,14 @@ export function Sidebar({ role, tenantName, isSuperadmin }: SidebarProps) {
   return (
     <aside className="h-full w-64 flex flex-col bg-white border-r border-black/[0.03] apple-shadow overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-8 border-b border-black/[0.03]">
-        <div className="flex flex-col items-center text-center gap-3">
-          <Link href="/" className="hover:scale-105 transition-transform">
-            <Image 
-              src="/images/Icon.png" 
-              alt="Japan Arena Corp" 
-              width={48} 
-              height={48} 
-              className="object-contain"
-            />
-          </Link>
-          <div className="min-w-0">
-            <p className="text-sm font-black text-gray-900 truncate sf-display">
-              {tenantName ?? 'Pharmacy Portal'}
-            </p>
-            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-[0.2em]">
-              Japan Arena <span className="text-blue-600">SaaS</span>
-            </p>
-          </div>
-        </div>
+      <div className="px-4 py-7 border-b border-black/[0.03]">
+        <Link href="/" className="flex items-center justify-center hover:scale-105 transition-transform">
+          <img
+            src="/logo-wide-clean.png"
+            alt="Webzoka — Part of Japan Arena Corp"
+            className="w-[210px] max-w-[86%] max-h-[68px] object-contain"
+          />
+        </Link>
       </div>
 
       {/* Nav */}
