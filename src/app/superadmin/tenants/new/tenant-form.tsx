@@ -75,7 +75,7 @@ export function TenantForm() {
                 className="rounded-r-none"
               />
               <span className="h-10 px-3 flex items-center bg-gray-50 border border-l-0 border-gray-200 rounded-r-xl text-xs text-gray-400 whitespace-nowrap">
-                .japanarenacorp.com
+                .pharmacy.webzoka.com
               </span>
             </div>
           </Field>

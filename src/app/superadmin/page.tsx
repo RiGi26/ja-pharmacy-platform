@@ -37,7 +37,7 @@ export default async function SuperadminPage() {
       render: (row: Record<string, unknown>) => (
         <div>
           <p className="font-semibold text-gray-900">{String(row.name)}</p>
-          <p className="text-xs text-gray-400 font-mono">{String(row.slug)}.japanarenacorp.com</p>
+          <p className="text-xs text-gray-400 font-mono">{String(row.slug)}.pharmacy.webzoka.com</p>
         </div>
       ),
     },

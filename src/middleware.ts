@@ -7,7 +7,7 @@ const SUPERADMIN_SUBDOMAIN = 'admin'
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone()
   const hostname = request.headers.get('host') ?? ''
-  const domain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'japanarenacorp.com'
+  const domain = process.env.NEXT_PUBLIC_APP_DOMAIN ?? 'pharmacy.webzoka.com'
 
   // Extract subdomain
   const subdomain = hostname.replace(`.${domain}`, '').split(':')[0]

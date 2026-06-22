@@ -7,12 +7,14 @@ const nextConfig: NextConfig = {
         'localhost:3000',
         'japanarenacorp.com',
         '*.japanarenacorp.com',
+        'pharmacy.webzoka.com',
+        '*.pharmacy.webzoka.com',
         '*.vercel.app',
       ],
     },
   },
   images: {
-    domains: ['japanarenacorp.com'],
+    domains: ['japanarenacorp.com', 'webzoka.com', 'pharmacy.webzoka.com'],
   },
   async headers() {
     return [
