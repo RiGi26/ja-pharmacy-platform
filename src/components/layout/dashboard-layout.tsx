@@ -39,7 +39,7 @@ export function DashboardLayout({ children, role, tenantName, isSuperadmin }: Da
         "fixed inset-y-0 left-0 z-[70] w-64 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] lg:translate-x-0",
         mobileOpen ? "translate-x-0" : "-translate-x-full"
       )}>
-        <Sidebar role={role} tenantName={tenantName} isSuperadmin={isSuperadmin} />
+        <Sidebar role={role} isSuperadmin={isSuperadmin} />
         {/* Mobile Close Button - Only show when open to avoid blocking header buttons */}
         {mobileOpen && (
           <button 
@@ -62,7 +62,7 @@ export function DashboardLayout({ children, role, tenantName, isSuperadmin }: Da
              >
                 <Menu size={22} />
              </button>
-             <Image src="/images/Icon.png" alt="Logo" width={24} height={24} className="object-contain" />
+             <Image src="/logo-rocket.png" alt="Webzoka" width={24} height={24} className="object-contain" />
              <span className="text-sm font-black text-gray-900 truncate max-w-[120px] sm:max-w-[200px] sf-display tracking-tight">
                {tenantName ?? 'Pharmacy'}
              </span>
