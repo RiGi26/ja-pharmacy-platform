@@ -10,7 +10,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="flex flex-col items-center mb-10">
           <Link 
-            href="https://ja-landingpage-platform.vercel.app" 
+            href="https://www.webzoka.com"
             className="group flex flex-col items-center gap-4 transition-all"
             title="Kembali ke Portal Utama"
           >
