@@ -137,7 +137,7 @@ export function SettingsForm({ tenant, config, tenantId }: Props) {
               <div>
                 <label className="block text-xs font-semibold text-gray-500 mb-1.5">Subdomain</label>
                 <Input value={tenant?.slug ?? ''} disabled className="opacity-60" />
-                <p className="text-xs text-gray-400 mt-1">{tenant?.slug}.japanarenacorp.com</p>
+                <p className="text-xs text-gray-400 mt-1">{tenant?.slug}.pharmacy.webzoka.com</p>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 mb-1.5">No. Telepon</label>
