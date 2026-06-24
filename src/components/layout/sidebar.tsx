@@ -86,7 +86,7 @@ export function Sidebar({ role, isSuperadmin }: SidebarProps) {
       {/* Footer */}
       <div className="p-3 border-t border-black/[0.03] space-y-1">
         <a 
-          href="https://ja-landingpage-platform.vercel.app"
+          href="https://www.webzoka.com"
           className="flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold text-gray-400 hover:bg-gray-50 hover:text-gray-900 transition-all"
         >
           <Building2 className="w-4 h-4" />
