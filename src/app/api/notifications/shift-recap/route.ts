@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     ``,
     `💵 Saldo Akhir (Tunai): *${formatCurrency(closingBalance)}*`,
     ``,
-    `_Japan Arena Pharmacy_`,
+    `_Webzoka Pharmacy_`,
   ].join('\n')
 
   for (const owner of owners ?? []) {

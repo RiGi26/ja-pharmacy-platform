@@ -7,7 +7,7 @@ import { Providers } from './providers'
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: 'ja-pharmacy-platform — Japan Arena Corp',
+  title: 'Webzoka Pharmacy',
   description: 'Platform apotek digital multi-tenant',
 }
 
