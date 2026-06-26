@@ -83,7 +83,7 @@ export default async function SuperadminPage() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      <PageHeader title="Superadmin Panel" description="Kelola semua apotek di Japan Arena Corp">
+      <PageHeader title="Superadmin Panel" description="Kelola semua apotek di Webzoka">
         <Link href="/superadmin/tenants/new">
           <Button size="sm">
             <Plus className="w-4 h-4" />

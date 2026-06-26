@@ -52,7 +52,7 @@ Deno.serve(async (req) => {
         .in('role', ['owner', 'apoteker'])
         .eq('is_active', true)
 
-      const msg = `⚠️ *[${tenant.name}] Alert H-${days}*\n\n*${medicine.name}* akan kedaluwarsa dalam *${days} hari*.\n\nSegera lakukan tindakan.\n\n_Japan Arena Pharmacy_`
+      const msg = `⚠️ *[${tenant.name}] Alert H-${days}*\n\n*${medicine.name}* akan kedaluwarsa dalam *${days} hari*.\n\nSegera lakukan tindakan.\n\n_Webzoka Pharmacy_`
 
       for (const u of users ?? []) {
         if (u.phone) {

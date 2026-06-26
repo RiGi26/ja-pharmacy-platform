@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     ``,
     `Invoice *${invoiceNumber}* telah di-void dan stok dikembalikan.`,
     ``,
-    `_Japan Arena Pharmacy_`,
+    `_Webzoka Pharmacy_`,
   ].join('\n')
 
   for (const r of ownersRes.data ?? []) {

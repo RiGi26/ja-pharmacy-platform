@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     ``,
     `Segera setujui atau tolak di aplikasi.`,
     ``,
-    `_Japan Arena Pharmacy_`,
+    `_Webzoka Pharmacy_`,
   ].join('\n')
 
   for (const r of recipientsRes.data ?? []) {

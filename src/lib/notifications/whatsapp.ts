@@ -25,16 +25,16 @@ export async function sendWhatsApp({ target, message, token }: WaSendParams): Pr
 
 export function buildExpiryMessage(medicineName: string, daysLeft: number, tenantName: string): string {
   if (daysLeft <= 0) {
-    return `🚫 *[${tenantName}] OBAT EXPIRED*\n\n*${medicineName}* sudah kedaluwarsa. Segera lakukan penanganan.\n\n_Japan Arena Pharmacy System_`
+    return `🚫 *[${tenantName}] OBAT EXPIRED*\n\n*${medicineName}* sudah kedaluwarsa. Segera lakukan penanganan.\n\n_Webzoka Pharmacy System_`
   }
   const emoji = daysLeft <= 30 ? '🔴' : daysLeft <= 90 ? '🟡' : '🟠'
-  return `${emoji} *[${tenantName}] Alert Kedaluwarsa H-${daysLeft}*\n\n*${medicineName}* akan kedaluwarsa dalam *${daysLeft} hari*.\n\nSegera lakukan tindakan yang diperlukan.\n\n_Japan Arena Pharmacy System_`
+  return `${emoji} *[${tenantName}] Alert Kedaluwarsa H-${daysLeft}*\n\n*${medicineName}* akan kedaluwarsa dalam *${daysLeft} hari*.\n\nSegera lakukan tindakan yang diperlukan.\n\n_Webzoka Pharmacy System_`
 }
 
 export function buildNewPrescriptionMessage(patientName: string, doctorName: string, tenantName: string): string {
-  return `💊 *[${tenantName}] Resep Baru*\n\nPasien: *${patientName}*\nDokter: ${doctorName}\n\nSegera proses di aplikasi.\n\n_Japan Arena Pharmacy System_`
+  return `💊 *[${tenantName}] Resep Baru*\n\nPasien: *${patientName}*\nDokter: ${doctorName}\n\nSegera proses di aplikasi.\n\n_Webzoka Pharmacy System_`
 }
 
 export function buildLowStockMessage(medicineName: string, currentStock: number, minStock: number, tenantName: string): string {
-  return `⚠️ *[${tenantName}] Stok Rendah*\n\n*${medicineName}*\nStok saat ini: *${currentStock}* (min: ${minStock})\n\nSegera lakukan pemesanan ulang.\n\n_Japan Arena Pharmacy System_`
+  return `⚠️ *[${tenantName}] Stok Rendah*\n\n*${medicineName}*\nStok saat ini: *${currentStock}* (min: ${minStock})\n\nSegera lakukan pemesanan ulang.\n\n_Webzoka Pharmacy System_`
 }

@@ -17,7 +17,7 @@ export default function LoginPage() {
             <div className="relative">
               <Image 
                 src="/images/Icon.png" 
-                alt="Japan Arena Corp" 
+                alt="Webzoka"
                 width={64} 
                 height={64} 
                 className="object-contain group-hover:scale-110 transition-transform duration-500"
@@ -27,7 +27,7 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="text-center">
-              <h1 className="text-2xl font-black text-gray-900 tracking-tight sf-display-heavy">Japan Arena <span className="text-blue-600">Pharmacy</span></h1>
+              <h1 className="text-2xl font-black text-gray-900 tracking-tight sf-display-heavy">Webzoka <span className="text-blue-600">Pharmacy</span></h1>
               <p className="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-[0.2em]">SaaS Cloud Infrastructure</p>
             </div>
           </Link>
@@ -41,7 +41,7 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-[11px] font-medium text-gray-400 mt-10">
-          © {new Date().getFullYear()} Japan Arena Corp · Solusi SaaS Terintegrasi
+          © {new Date().getFullYear()} Webzoka · Solusi SaaS Terintegrasi
         </p>
       </div>
     </div>
