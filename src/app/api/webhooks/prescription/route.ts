@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/server'
+import { guardEntitlementApi } from '@/lib/tenant-entitlements'
 import { createHmac } from 'crypto'
 
 function verifyHmac(body: string, signature: string, secret: string): boolean {
@@ -32,6 +33,11 @@ export async function POST(req: NextRequest) {
   if (!verifyHmac(body, signature, config.clinic_webhook_secret)) {
     return NextResponse.json({ success: false, error: 'Invalid signature' }, { status: 401 })
   }
+
+  // Tier gate: clinic prescription integration = Pro. Block (after auth, so we
+  // don't leak entitlement state to unsigned callers) when tenant lacks it.
+  const entGuard = await guardEntitlementApi(tenantId, 'prescription')
+  if (entGuard) return entGuard
 
   let payload: {
     prescription_id: string

@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { assertEntitled } from '@/lib/tenant-entitlements'
 import { PageHeader } from '@/components/layout/page-header'
 import { ReportsClient } from './reports-client'
 import { startOfDay, endOfDay, subDays, startOfMonth, format } from 'date-fns'
@@ -19,6 +20,9 @@ export default async function ReportsPage({
 
   const canAccess = ['superadmin', 'owner', 'admin'].includes(profile.role)
   if (!canAccess) redirect('/dashboard')
+
+  // Tier gate: Laporan & Analitik (+ ekspor) = Growth+ (Starter diblok → upsell).
+  await assertEntitled(profile.tenant_id, 'reports')
 
   const params = await searchParams
   const period = params.period ?? '30d'

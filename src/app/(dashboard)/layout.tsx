@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import { getTenantEntitlements } from '@/lib/tenant-entitlements'
+import { isSubscriptionActive } from '@/lib/entitlements'
 import type { UserRole } from '@/types'
 
 export default async function Layout({ children }: { children: React.ReactNode }) {
@@ -24,8 +26,20 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   if (tenant?.status === 'suspended') redirect('/suspended')
 
+  // Tier entitlements → filter the sidebar to the tenant's package. A tenant
+  // without an entitlement row resolves to 'legacy' (all features) so nothing is
+  // hidden until Core syncs a real tier. Suspended-by-billing → don't hide nav
+  // (let them reach /dashboard & settings to resolve payment); features still
+  // gated per-page.
+  const ent = await getTenantEntitlements(profile.tenant_id)
+  const entitlements = isSubscriptionActive(ent.status) ? ent.entitlements : undefined
+
   return (
-    <DashboardLayout role={profile.role as UserRole} tenantName={tenant?.name}>
+    <DashboardLayout
+      role={profile.role as UserRole}
+      tenantName={tenant?.name}
+      entitlements={entitlements}
+    >
       {children}
     </DashboardLayout>
   )

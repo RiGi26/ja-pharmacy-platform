@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { assertEntitled } from '@/lib/tenant-entitlements'
 import { PageHeader } from '@/components/layout/page-header'
 import { DisposalList } from './disposal-list'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,9 @@ export default async function DisposalsPage() {
 
   const canAccess = ['superadmin', 'admin', 'apoteker'].includes(profile.role)
   if (!canAccess) redirect('/dashboard')
+
+  // Tier gate: Retur & Musnah = Growth+ (Starter diblok → upsell).
+  await assertEntitled(profile.tenant_id, 'disposals')
 
   const { data: disposals } = await supabase
     .from('disposals')

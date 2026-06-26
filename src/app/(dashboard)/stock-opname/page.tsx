@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { assertEntitled } from '@/lib/tenant-entitlements'
 import { PageHeader } from '@/components/layout/page-header'
 import { Button } from '@/components/ui/button'
 import { StockOpnameTable } from './stock-opname-table'
@@ -17,6 +18,9 @@ export default async function StockOpnamePage() {
 
   const canAccess = ['superadmin', 'admin', 'apoteker'].includes(profile.role)
   if (!canAccess) redirect('/dashboard')
+
+  // Tier gate: Stok Opname = Growth+ (Starter diblok → upsell di /dashboard).
+  await assertEntitled(profile.tenant_id, 'stock_opname')
 
   // Stok opname history from stock_movements with type ADJUST
   const { data: adjustments } = await supabase
