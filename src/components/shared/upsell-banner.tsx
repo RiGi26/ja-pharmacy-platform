@@ -14,7 +14,8 @@ const BILLING_LABEL: Record<string, string> = {
 /**
  * Shown on /dashboard when a tier-gated page bounced the user here with
  * ?upsell=<key> (feature not in package) or ?billing=<status> (not in good
- * standing). Pharmacy has no self-serve upgrade yet → point to the operator.
+ * standing). CTA points to the in-app billing page (/billing) — the canonical
+ * uniform gate behaviour across all portals (see /wire-self-billing SOP).
  */
 export function UpsellBanner({ upsell, billing }: { upsell?: string; billing?: string }) {
   const [dismissed, setDismissed] = useState(false)
@@ -26,7 +27,7 @@ export function UpsellBanner({ upsell, billing }: { upsell?: string; billing?: s
     ? BILLING_LABEL[billing!] ?? 'Langganan tidak aktif'
     : `Fitur "${featureLabel}" terkunci`
   const body = isBilling
-    ? 'Akses fitur berbayar dijeda sampai pembayaran diperbarui. Hubungi admin untuk mengaktifkan kembali.'
+    ? 'Akses fitur berbayar dijeda sampai pembayaran diperbarui.'
     : `Fitur ini tidak termasuk dalam paket langganan Anda saat ini. Tingkatkan paket untuk membukanya.`
 
   return (
@@ -40,14 +41,12 @@ export function UpsellBanner({ upsell, billing }: { upsell?: string; billing?: s
         <p className={`text-sm font-bold ${isBilling ? 'text-red-700' : 'text-amber-800'}`}>{title}</p>
         <p className={`text-sm mt-0.5 ${isBilling ? 'text-red-600' : 'text-amber-700'}`}>{body}</p>
         <a
-          href="https://wa.me/6281296917963"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/billing"
           className={`inline-block mt-2 text-sm font-semibold underline ${
             isBilling ? 'text-red-700' : 'text-amber-800'
           }`}
         >
-          Hubungi admin untuk tingkatkan paket →
+          {isBilling ? 'Perbarui pembayaran →' : 'Lihat paket & upgrade →'}
         </a>
       </div>
       <button
