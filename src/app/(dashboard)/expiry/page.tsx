@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { assertEntitled } from '@/lib/tenant-entitlements'
 import { PageHeader } from '@/components/layout/page-header'
 import { ExpiryDashboard } from './expiry-dashboard'
 
@@ -14,6 +15,9 @@ export default async function ExpiryPage() {
     .eq('user_id', user.id)
     .single()
   if (!profile) redirect('/login')
+
+  // Tier gate: Monitoring Kedaluwarsa = Growth+ (Starter diblok → upsell).
+  await assertEntitled(profile.tenant_id, 'expiry_monitoring')
 
   const thresholdDate = new Date(new Date().getTime() + 180 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10)
   const { data: batches } = await supabase

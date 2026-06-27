@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient, createAdminClient } from '@/lib/supabase/server'
+import { guardKasirSeat } from '@/lib/tenant-entitlements'
 
 export async function POST(req: NextRequest) {
   const { email, role, full_name, phone, tenant_id } = await req.json()
@@ -22,6 +23,11 @@ export async function POST(req: NextRequest) {
   if (profile.role !== 'superadmin' && profile.tenant_id !== tenant_id) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
+
+  // Tier gate: enforce the per-tier staff/kasir seat quota (1 / 3 / ∞). Legacy
+  // tenants (no entitlement row) and Pro are unlimited — behaviour-preserving.
+  const seatGuard = await guardKasirSeat(tenant_id)
+  if (seatGuard) return seatGuard
 
   // Use admin client to invite user
   const admin = await createAdminClient()

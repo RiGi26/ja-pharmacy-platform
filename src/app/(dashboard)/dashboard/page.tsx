@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { PageHeader } from '@/components/layout/page-header'
+import { UpsellBanner } from '@/components/shared/upsell-banner'
 import { StatCard } from '@/components/shared/stat-card'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -11,7 +12,12 @@ import {
   FileText, Clock,
 } from 'lucide-react'
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ upsell?: string; billing?: string }>
+}) {
+  const { upsell, billing } = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -73,6 +79,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
+      <UpsellBanner upsell={upsell} billing={billing} />
       <PageHeader
         title={`${greeting}, ${profile.full_name.split(' ')[0]} 👋`}
         description="Ringkasan aktivitas apotek hari ini"

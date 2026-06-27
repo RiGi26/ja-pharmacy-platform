@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { guardEntitlementApi } from '@/lib/tenant-entitlements'
 import { sendWhatsApp, buildLowStockMessage } from '@/lib/notifications/whatsapp'
 
 export async function POST(req: NextRequest) {
   const { tenantId, medicineIds } = await req.json() as { tenantId: string; medicineIds: string[] }
   if (!tenantId || !medicineIds?.length) return NextResponse.json({ ok: true })
+
+  // Tier gate: WhatsApp notifications = Growth+ (legacy/Pro allowed).
+  const waGuard = await guardEntitlementApi(tenantId, 'wa_notif')
+  if (waGuard) return waGuard
 
   const supabase = await createClient()
 

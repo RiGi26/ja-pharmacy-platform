@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import { assertEntitled } from '@/lib/tenant-entitlements'
 import { PageHeader } from '@/components/layout/page-header'
 import { PrescriptionQueue } from './prescription-queue'
 
@@ -17,6 +18,9 @@ export default async function PrescriptionsPage() {
 
   const canAccess = ['superadmin', 'admin', 'apoteker'].includes(profile.role)
   if (!canAccess) redirect('/dashboard')
+
+  // Tier gate: Integrasi Resep Klinik = Pro (Starter/Growth diblok → upsell).
+  await assertEntitled(profile.tenant_id, 'prescription')
 
   const { data: prescriptions } = await supabase
     .from('prescriptions')

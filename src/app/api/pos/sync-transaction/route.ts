@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { guardEntitlementApi } from '@/lib/tenant-entitlements'
 import type { OfflineTransaction } from '@/lib/offline/db'
 
 export async function POST(req: NextRequest) {
@@ -8,6 +9,14 @@ export async function POST(req: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  // Tier gate: offline (PWA) sync = Pro. Resolve tenant from the authenticated
+  // user (not the client-supplied body) before gating. Legacy/Pro = allowed.
+  const { data: prof } = await supabase
+    .from('user_profiles').select('tenant_id').eq('user_id', user.id).single()
+  if (!prof?.tenant_id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  const offlineGuard = await guardEntitlementApi(prof.tenant_id, 'offline_mode')
+  if (offlineGuard) return offlineGuard
 
   // Check for duplicate (idempotency via invoice_number)
   const { data: existing } = await supabase

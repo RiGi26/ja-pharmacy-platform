@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import type { UserRole } from '@/types'
+import type { EntitlementKey } from '@/lib/entitlements'
 import {
   LayoutDashboard, Pill, Package, ShoppingCart, FileText,
   BarChart2, Settings, Users, AlertTriangle, LogOut,
@@ -15,6 +16,8 @@ interface NavItem {
   href: string
   icon: React.ElementType
   roles: UserRole[]
+  /** Tier-gated menu: hidden unless the tenant holds this entitlement. Omit = always shown. */
+  ent?: EntitlementKey
   badge?: string
 }
 
@@ -22,12 +25,12 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard',      href: '/dashboard',      icon: LayoutDashboard, roles: ['superadmin','owner','admin','apoteker','kasir'] },
   { label: 'Obat',           href: '/medicines',      icon: Pill,            roles: ['superadmin','owner','admin','apoteker'] },
   { label: 'Inventori',      href: '/inventory',      icon: Package,         roles: ['superadmin','owner','admin','apoteker'] },
-  { label: 'Monitoring Exp.', href: '/expiry',        icon: AlertTriangle,   roles: ['superadmin','owner','admin','apoteker'] },
+  { label: 'Monitoring Exp.', href: '/expiry',        icon: AlertTriangle,   roles: ['superadmin','owner','admin','apoteker'], ent: 'expiry_monitoring' },
   { label: 'Kasir (POS)',    href: '/pos',            icon: ShoppingCart,    roles: ['superadmin','admin','apoteker','kasir'] },
-  { label: 'Resep',          href: '/prescriptions',  icon: FileText,        roles: ['superadmin','admin','apoteker'] },
-  { label: 'Stok Opname',    href: '/stock-opname',   icon: ClipboardList,   roles: ['superadmin','admin','apoteker'] },
-  { label: 'Retur & Musnah', href: '/disposals',      icon: Recycle,         roles: ['superadmin','admin','apoteker'] },
-  { label: 'Laporan',        href: '/reports',        icon: BarChart2,       roles: ['superadmin','owner','admin'] },
+  { label: 'Resep',          href: '/prescriptions',  icon: FileText,        roles: ['superadmin','admin','apoteker'], ent: 'prescription' },
+  { label: 'Stok Opname',    href: '/stock-opname',   icon: ClipboardList,   roles: ['superadmin','admin','apoteker'], ent: 'stock_opname' },
+  { label: 'Retur & Musnah', href: '/disposals',      icon: Recycle,         roles: ['superadmin','admin','apoteker'], ent: 'disposals' },
+  { label: 'Laporan',        href: '/reports',        icon: BarChart2,       roles: ['superadmin','owner','admin'], ent: 'reports' },
   { label: 'Pengguna',       href: '/users',          icon: Users,           roles: ['superadmin','owner'] },
   { label: 'Pengaturan',     href: '/settings',       icon: Settings,        roles: ['superadmin','owner'] },
 ]
@@ -40,12 +43,19 @@ const SUPERADMIN_ITEMS: NavItem[] = [
 interface SidebarProps {
   role: UserRole
   isSuperadmin?: boolean
+  /** Tenant's granted features (from tenant_entitlements). undefined = show all (legacy). */
+  entitlements?: EntitlementKey[]
 }
 
-export function Sidebar({ role, isSuperadmin }: SidebarProps) {
+export function Sidebar({ role, isSuperadmin, entitlements }: SidebarProps) {
   const pathname = usePathname()
 
-  const items = isSuperadmin ? SUPERADMIN_ITEMS : NAV_ITEMS.filter(i => i.roles.includes(role))
+  const items = isSuperadmin
+    ? SUPERADMIN_ITEMS
+    : NAV_ITEMS.filter(i =>
+        i.roles.includes(role) &&
+        (!i.ent || !entitlements || entitlements.includes(i.ent)),
+      )
 
   return (
     <aside className="h-full w-64 flex flex-col bg-white border-r border-black/[0.03] apple-shadow overflow-hidden">

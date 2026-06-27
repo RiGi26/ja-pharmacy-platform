@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Sidebar } from './sidebar'
 import { OfflineStatusBar } from '@/components/shared/offline-status-bar'
 import type { UserRole } from '@/types'
+import type { EntitlementKey } from '@/lib/entitlements'
 import { Menu, X } from 'lucide-react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -14,9 +15,10 @@ interface DashboardLayoutProps {
   role: UserRole
   tenantName?: string
   isSuperadmin?: boolean
+  entitlements?: EntitlementKey[]
 }
 
-export function DashboardLayout({ children, role, tenantName, isSuperadmin }: DashboardLayoutProps) {
+export function DashboardLayout({ children, role, tenantName, isSuperadmin, entitlements }: DashboardLayoutProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
@@ -39,7 +41,7 @@ export function DashboardLayout({ children, role, tenantName, isSuperadmin }: Da
         "fixed inset-y-0 left-0 z-[70] w-64 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] lg:translate-x-0",
         mobileOpen ? "translate-x-0" : "-translate-x-full"
       )}>
-        <Sidebar role={role} isSuperadmin={isSuperadmin} />
+        <Sidebar role={role} isSuperadmin={isSuperadmin} entitlements={entitlements} />
         {/* Mobile Close Button - Only show when open to avoid blocking header buttons */}
         {mobileOpen && (
           <button 
