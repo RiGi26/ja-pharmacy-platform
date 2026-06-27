@@ -20,8 +20,11 @@ export async function middleware(request: NextRequest) {
   const pathname = url.pathname
   const isPublic = PUBLIC_ROUTES.some(r => pathname.startsWith(r))
 
-  // Allow webhook endpoints without auth
-  if (pathname.startsWith('/api/webhooks')) {
+  // Allow webhook + signed billing-sync endpoints without auth. These are
+  // server-to-server (clinic webhook / Core entitlement sync) and carry their own
+  // HMAC signature — they have no Supabase session, so the auth redirect below
+  // would otherwise bounce them to /login and the call would never land.
+  if (pathname.startsWith('/api/webhooks') || pathname.startsWith('/api/billing/sync')) {
     return NextResponse.next()
   }
 
