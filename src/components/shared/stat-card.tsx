@@ -21,9 +21,9 @@ export function StatCard({
     <div className={cn('bg-white rounded-2xl border border-black/[0.04] p-5 shadow-sm', className)}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">{title}</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{title}</p>
           <p className="text-2xl font-bold text-gray-900 tracking-tight truncate">{value}</p>
-          {subtitle && <p className="text-xs text-gray-400 mt-0.5">{subtitle}</p>}
+          {subtitle && <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>}
           {trend && (
             <p className={cn('text-xs font-medium mt-1.5', trend.value >= 0 ? 'text-green-600' : 'text-red-500')}>
               {trend.value >= 0 ? '↑' : '↓'} {Math.abs(trend.value)}% {trend.label}

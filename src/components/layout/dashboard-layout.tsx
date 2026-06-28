@@ -44,8 +44,9 @@ export function DashboardLayout({ children, role, tenantName, isSuperadmin, enti
         <Sidebar role={role} isSuperadmin={isSuperadmin} entitlements={entitlements} />
         {/* Mobile Close Button - Only show when open to avoid blocking header buttons */}
         {mobileOpen && (
-          <button 
+          <button
             onClick={() => setMobileOpen(false)}
+            aria-label="Tutup menu"
             className="lg:hidden absolute top-4 -right-12 p-2.5 bg-white text-gray-900 rounded-full shadow-xl border border-black/5 active:scale-90 transition-transform"
           >
             <X size={20} />
@@ -58,8 +59,9 @@ export function DashboardLayout({ children, role, tenantName, isSuperadmin, enti
         {/* Mobile Top Header */}
         <header className="lg:hidden sticky top-0 z-40 h-16 bg-white/80 backdrop-blur-xl border-b border-black/[0.04] flex items-center justify-between px-4 sm:px-6">
            <div className="flex items-center gap-3">
-             <button 
-               onClick={() => setMobileOpen(true)} 
+             <button
+               onClick={() => setMobileOpen(true)}
+               aria-label="Buka menu"
                className="p-2 -ml-1 text-gray-500 hover:bg-black/5 rounded-xl transition-colors active:scale-95"
              >
                 <Menu size={22} />
@@ -70,7 +72,7 @@ export function DashboardLayout({ children, role, tenantName, isSuperadmin, enti
              </span>
            </div>
            <div className="flex items-center gap-2">
-              <div className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-gray-400">
+              <div className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-gray-500">
                 {role}
               </div>
               <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-[10px] font-bold text-white shadow-lg shadow-blue-200">

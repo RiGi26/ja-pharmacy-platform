@@ -204,7 +204,7 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
         <div className="flex items-center gap-2">
           <ScanLine className="w-5 h-5 text-blue-600" />
           <span className="font-bold text-gray-900 sf-display tracking-tight">POS Kasir</span>
-          <span className="hidden sm:inline text-xs text-gray-400">— {cashierName}</span>
+          <span className="hidden sm:inline text-xs text-gray-500">— {cashierName}</span>
         </div>
         <div className="flex items-center gap-3">
           {lastScan && <span className="hidden md:inline text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded-lg font-mono tracking-tighter">Last: {lastScan}</span>}
@@ -243,6 +243,7 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
                   <div className="flex items-center gap-1.5">
                     <Button
                       variant="outline" size="icon" className="h-8 w-8 rounded-xl border-gray-100 hover:bg-gray-50 active:scale-90"
+                      aria-label={`Kurangi jumlah ${item.name}`}
                       onClick={() => store.updateQty(item.batch_id, item.quantity - 1)}
                     >
                       <Minus className="w-3 h-3" />
@@ -250,6 +251,7 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
                     <span className="w-6 text-center text-sm font-black sf-display">{item.quantity}</span>
                     <Button
                       variant="outline" size="icon" className="h-8 w-8 rounded-xl border-gray-100 hover:bg-gray-50 active:scale-90"
+                      aria-label={`Tambah jumlah ${item.name}`}
                       onClick={() => store.updateQty(item.batch_id, item.quantity + 1)}
                       disabled={item.quantity >= item.max_qty}
                     >
@@ -262,7 +264,8 @@ export function PosTerminal({ cashierName, tenantId, userId }: Props) {
                   </div>
 
                   <Button
-                    variant="ghost" size="icon" className="h-8 w-8 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                    variant="ghost" size="icon" className="h-8 w-8 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                    aria-label={`Hapus ${item.name} dari keranjang`}
                     onClick={() => store.removeItem(item.batch_id)}
                   >
                     <Trash2 className="w-4 h-4" />
