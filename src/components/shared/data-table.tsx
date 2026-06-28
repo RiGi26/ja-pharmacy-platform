@@ -37,7 +37,7 @@ export function DataTable<T extends object>({
                 <th
                   key={col.key}
                   className={cn(
-                    'px-4 py-3 text-left text-[11px] font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap',
+                    'px-4 py-3 text-left text-[11px] font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap',
                     col.className
                   )}
                 >
@@ -87,11 +87,12 @@ export function DataTable<T extends object>({
 
       {totalPages && totalPages > 1 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-          <p className="text-xs text-gray-400">Halaman {page} dari {totalPages}</p>
+          <p className="text-xs text-gray-500">Halaman {page} dari {totalPages}</p>
           <div className="flex gap-1">
             <Button
               variant="outline" size="icon"
               className="h-7 w-7"
+              aria-label="Halaman sebelumnya"
               onClick={() => onPageChange?.((page ?? 1) - 1)}
               disabled={page === 1}
             >
@@ -100,6 +101,7 @@ export function DataTable<T extends object>({
             <Button
               variant="outline" size="icon"
               className="h-7 w-7"
+              aria-label="Halaman berikutnya"
               onClick={() => onPageChange?.((page ?? 1) + 1)}
               disabled={page === totalPages}
             >

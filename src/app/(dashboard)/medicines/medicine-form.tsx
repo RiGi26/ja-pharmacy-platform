@@ -126,6 +126,7 @@ export function MedicineForm({ medicine, tenantId }: Props) {
                 type="button" variant="outline" size="icon"
                 onClick={() => set('barcode', generateInternalBarcode('JA'))}
                 title="Generate barcode internal"
+                aria-label="Generate barcode internal"
               >
                 <Barcode className="w-4 h-4" />
               </Button>
