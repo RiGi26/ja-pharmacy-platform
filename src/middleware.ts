@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-const PUBLIC_ROUTES = ['/login', '/not-found', '/_next', '/favicon.ico', '/api/webhooks']
+const PUBLIC_ROUTES = ['/login', '/register', '/api/register', '/not-found', '/_next', '/favicon.ico', '/api/webhooks']
 const SUPERADMIN_SUBDOMAIN = 'admin'
 
 export async function middleware(request: NextRequest) {
