@@ -86,3 +86,45 @@ body {
     animation: none;
   }
 }
+
+/* ─── Onboarding product tour (driver.js) — match portal chrome ──── */
+.ja-tour.driver-popover {
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
+  padding: 18px;
+}
+.ja-tour .driver-popover-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #111827;
+}
+.ja-tour .driver-popover-description {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #6b7280;
+}
+.ja-tour .driver-popover-progress-text {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+}
+.ja-tour .driver-popover-next-btn,
+.ja-tour .driver-popover-prev-btn {
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  text-shadow: none;
+}
+.ja-tour .driver-popover-next-btn {
+  background-color: #2563eb;
+  color: #fff;
+  border: 1px solid #2563eb;
+}
+.ja-tour .driver-popover-next-btn:hover {
+  background-color: #1d4ed8;
+}
+.ja-tour .driver-popover-prev-btn {
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 1px solid transparent;
+}

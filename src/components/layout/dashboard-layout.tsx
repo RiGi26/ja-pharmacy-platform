@@ -5,7 +5,7 @@ import { Sidebar } from './sidebar'
 import { OfflineStatusBar } from '@/components/shared/offline-status-bar'
 import type { UserRole } from '@/types'
 import type { EntitlementKey } from '@/lib/entitlements'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, HelpCircle } from 'lucide-react'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
@@ -72,6 +72,16 @@ export function DashboardLayout({ children, role, tenantName, isSuperadmin, enti
              </span>
            </div>
            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new CustomEvent('onboarding:replay-tour'))}
+                data-coach="help-button"
+                aria-label="Panduan — putar ulang tur"
+                title="Panduan portal"
+                className="p-2 text-gray-500 hover:bg-black/5 rounded-xl transition-colors active:scale-95"
+              >
+                <HelpCircle size={20} />
+              </button>
               <div className="hidden sm:block text-[10px] font-black uppercase tracking-widest text-gray-500">
                 {role}
               </div>

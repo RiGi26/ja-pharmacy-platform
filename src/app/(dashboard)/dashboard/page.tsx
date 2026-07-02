@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { PageHeader } from '@/components/layout/page-header'
 import { UpsellBanner } from '@/components/shared/upsell-banner'
+import { OnboardingChecklist } from '@/components/onboarding/OnboardingChecklist'
+import { getOnboardingState } from '@/lib/onboarding/state'
 import { StatCard } from '@/components/shared/stat-card'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -77,6 +79,9 @@ export default async function DashboardPage({
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Selamat pagi' : hour < 17 ? 'Selamat siang' : 'Selamat malam'
 
+  // Shares one computation with the dashboard layout via React cache().
+  const onboarding = await getOnboardingState()
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <UpsellBanner upsell={upsell} billing={billing} />
@@ -84,6 +89,15 @@ export default async function DashboardPage({
         title={`${greeting}, ${profile.full_name.split(' ')[0]} 👋`}
         description="Ringkasan aktivitas apotek hari ini"
       />
+
+      {onboarding.checklistVisible && (
+        <OnboardingChecklist
+          items={onboarding.items}
+          completed={onboarding.completed}
+          total={onboarding.total}
+          progress={onboarding.progress}
+        />
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -169,14 +183,17 @@ export default async function DashboardPage({
           <CardContent>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { label: 'Buka Kasir', href: '/pos', icon: ShoppingCart, color: 'bg-blue-50 text-blue-700 hover:bg-blue-100' },
-                { label: 'Input Stok', href: '/inventory/stock-in', icon: Package, color: 'bg-purple-50 text-purple-700 hover:bg-purple-100' },
-                { label: 'Cek Resep', href: '/prescriptions', icon: FileText, color: 'bg-green-50 text-green-700 hover:bg-green-100' },
-                { label: 'Monitoring Exp', href: '/expiry', icon: AlertTriangle, color: 'bg-amber-50 text-amber-700 hover:bg-amber-100' },
+                // tour: same data-tour keys as the sidebar — on mobile the sidebar is
+                // off-screen, so the tour anchors to these cards instead.
+                { label: 'Buka Kasir', href: '/pos', icon: ShoppingCart, color: 'bg-blue-50 text-blue-700 hover:bg-blue-100', tour: 'nav-pos' },
+                { label: 'Input Stok', href: '/inventory/stock-in', icon: Package, color: 'bg-purple-50 text-purple-700 hover:bg-purple-100', tour: 'nav-inventory' },
+                { label: 'Cek Resep', href: '/prescriptions', icon: FileText, color: 'bg-green-50 text-green-700 hover:bg-green-100', tour: undefined },
+                { label: 'Monitoring Exp', href: '/expiry', icon: AlertTriangle, color: 'bg-amber-50 text-amber-700 hover:bg-amber-100', tour: undefined },
               ].map(action => (
                 <a
                   key={action.href}
                   href={action.href}
+                  data-tour={action.tour}
                   className={`flex items-center gap-2 p-3 rounded-xl text-sm font-medium transition-colors ${action.color}`}
                 >
                   <action.icon className="w-4 h-4" />
