@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { PageHeader } from '@/components/layout/page-header'
 import { MedicineList } from './medicine-list'
+import { PageCoachmark } from '@/components/onboarding/PageCoachmark'
+import { getSeenCoachmarks } from '@/lib/onboarding/state'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import Link from 'next/link'
@@ -44,14 +46,18 @@ export default async function MedicinesPage({
   const { data: medicines, count } = await query
   const totalPages = Math.ceil((count ?? 0) / limit)
 
-  const canWrite = ['superadmin', 'admin'].includes(profile.role)
+  // Owner included: a fresh self-subscribe tenant has only the owner account, and
+  // the /medicines/new form itself was never role-gated — hiding the button just
+  // dead-ended the first mission.
+  const canWrite = ['superadmin', 'owner', 'admin'].includes(profile.role)
+  const seenCoachmarks = await getSeenCoachmarks()
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <PageHeader title="Master Data Obat" description={`${count ?? 0} obat terdaftar`}>
         {canWrite && (
           <Link href="/medicines/new">
-            <Button size="sm">
+            <Button size="sm" data-coach="medicines-add">
               <Plus className="w-4 h-4" />
               Tambah Obat
             </Button>
@@ -64,6 +70,13 @@ export default async function MedicinesPage({
         totalPages={totalPages}
         page={page}
         canWrite={canWrite}
+      />
+      <PageCoachmark
+        coachKey="coach:medicines"
+        target='[data-coach="medicines-add"]'
+        title="Tambah obat di sini"
+        description="Masukkan obat yang kamu jual, lengkap dengan harga dan golongan."
+        seen={seenCoachmarks.includes('coach:medicines')}
       />
     </div>
   )

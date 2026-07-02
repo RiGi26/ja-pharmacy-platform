@@ -8,7 +8,7 @@ import type { EntitlementKey } from '@/lib/entitlements'
 import {
   LayoutDashboard, Pill, Package, ShoppingCart, FileText,
   BarChart2, Settings, Users, AlertTriangle, LogOut,
-  Building2, ChevronRight, Recycle, ClipboardList, CreditCard,
+  Building2, ChevronRight, Recycle, ClipboardList, CreditCard, HelpCircle,
 } from 'lucide-react'
 
 interface NavItem {
@@ -35,6 +35,16 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Langganan',      href: '/billing',        icon: CreditCard,      roles: ['superadmin','owner'] },
   { label: 'Pengaturan',     href: '/settings',       icon: Settings,        roles: ['superadmin','owner'] },
 ]
+
+// Onboarding tour anchors — the tour resolves these to whichever element is
+// actually visible (sidebar on desktop, dashboard quick-action cards on mobile).
+const TOUR_KEYS: Record<string, string> = {
+  '/dashboard': 'nav-dashboard',
+  '/medicines': 'nav-medicines',
+  '/inventory': 'nav-inventory',
+  '/pos': 'nav-pos',
+  '/reports': 'nav-reports',
+}
 
 const SUPERADMIN_ITEMS: NavItem[] = [
   { label: 'Semua Tenant',   href: '/superadmin/tenants', icon: Building2, roles: ['superadmin'] },
@@ -79,6 +89,7 @@ export function Sidebar({ role, isSuperadmin, entitlements }: SidebarProps) {
             <Link
               key={item.href}
               href={item.href}
+              data-tour={TOUR_KEYS[item.href]}
               className={cn(
                 'flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-bold transition-all duration-200',
                 isActive
@@ -96,7 +107,18 @@ export function Sidebar({ role, isSuperadmin, entitlements }: SidebarProps) {
 
       {/* Footer */}
       <div className="p-3 border-t border-black/[0.03] space-y-1">
-        <a 
+        <button
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent('onboarding:replay-tour'))}
+          data-coach="help-button"
+          aria-label="Panduan — putar ulang tur"
+          title="Panduan portal"
+          className="flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold text-gray-400 hover:bg-gray-50 hover:text-gray-900 w-full transition-all"
+        >
+          <HelpCircle className="w-4 h-4" />
+          <span>Panduan</span>
+        </button>
+        <a
           href="https://www.webzoka.com"
           className="flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-bold text-gray-400 hover:bg-gray-50 hover:text-gray-900 transition-all"
         >
