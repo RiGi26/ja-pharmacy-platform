@@ -8,7 +8,7 @@ import type { EntitlementKey } from '@/lib/entitlements'
 import {
   LayoutDashboard, Pill, Package, ShoppingCart, FileText,
   BarChart2, Settings, Users, AlertTriangle, LogOut,
-  Building2, ChevronRight, Recycle, ClipboardList, CreditCard, HelpCircle,
+  Building2, ChevronRight, Recycle, ClipboardList, CreditCard, HelpCircle, BookOpen,
 } from 'lucide-react'
 
 interface NavItem {
@@ -30,6 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Resep',          href: '/prescriptions',  icon: FileText,        roles: ['superadmin','admin','apoteker'], ent: 'prescription' },
   { label: 'Stok Opname',    href: '/stock-opname',   icon: ClipboardList,   roles: ['superadmin','admin','apoteker'], ent: 'stock_opname' },
   { label: 'Retur & Musnah', href: '/disposals',      icon: Recycle,         roles: ['superadmin','admin','apoteker'], ent: 'disposals' },
+  { label: 'Logbook Obat',   href: '/controlled-drugs', icon: BookOpen,      roles: ['superadmin','admin','apoteker'] },
   { label: 'Laporan',        href: '/reports',        icon: BarChart2,       roles: ['superadmin','owner','admin'], ent: 'reports' },
   { label: 'Pengguna',       href: '/users',          icon: Users,           roles: ['superadmin','owner'] },
   { label: 'Langganan',      href: '/billing',        icon: CreditCard,      roles: ['superadmin','owner'] },
