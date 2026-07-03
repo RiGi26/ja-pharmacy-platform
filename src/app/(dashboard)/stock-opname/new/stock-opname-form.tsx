@@ -132,7 +132,7 @@ export function StockOpnameForm({ batches, tenantId, userId }: Props) {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="hidden lg:block">
         <CardHeader>
           <CardTitle className="text-sm text-gray-500 font-medium">
             Masukkan jumlah fisik untuk setiap batch. Kosongkan jika tidak dihitung.
@@ -194,6 +194,62 @@ export function StockOpnameForm({ batches, tenantId, userId }: Props) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Mobile card fallback — panel putih pembungkus dibuang, tiap batch jadi kartu penuh */}
+      <div className="lg:hidden space-y-3">
+        <p className="text-sm text-gray-500">
+          Masukkan jumlah fisik untuk setiap batch. Kosongkan jika tidak dihitung.
+        </p>
+        {filtered.map(batch => {
+          const diff = getDiff(batch)
+          const phys = getPhysical(batch.id)
+          return (
+            <div key={batch.id} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+              <div className="flex items-start justify-between gap-3">
+                <p className="font-semibold text-gray-900">{batch.medicines?.name ?? '—'}</p>
+                <div className="flex-shrink-0">
+                  {phys === null ? (
+                    <span className="text-gray-300">—</span>
+                  ) : diff === 0 ? (
+                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                  ) : (
+                    <Badge variant={diff! > 0 ? 'success' : 'destructive'}>
+                      {diff! > 0 ? '+' : ''}{diff}
+                    </Badge>
+                  )}
+                </div>
+              </div>
+              <div className="mt-3 space-y-2">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Batch</span>
+                  <span className="font-mono text-sm text-gray-800">{batch.batch_number}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Exp.</span>
+                  <span className="text-sm text-gray-800">{formatDate(batch.expiry_date)}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Stok Sistem</span>
+                  <span className="text-sm text-gray-800">
+                    {batch.quantity} <span className="text-xs text-gray-400">{batch.medicines?.unit}</span>
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Stok Fisik</span>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={counts[batch.id] ?? ''}
+                    onChange={e => setCounts(prev => ({ ...prev, [batch.id]: e.target.value }))}
+                    placeholder="—"
+                    className="h-9 text-sm text-right w-28"
+                  />
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
 
       {diffCount > 0 && (
         <Card className="border-amber-200 bg-amber-50">
