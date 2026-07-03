@@ -139,61 +139,118 @@ export function ControlledDrugManager({
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white apple-shadow">
-        {filtered.length === 0 ? (
+      {filtered.length === 0 ? (
+        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white apple-shadow">
           <div className="flex flex-col items-center justify-center py-16 text-gray-400">
             <BookOpen className="mb-3 h-9 w-9 opacity-40" />
             <p className="text-sm">Belum ada catatan pada periode ini.</p>
           </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-100 bg-gray-50 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
-                  <th className="px-4 py-3">Tanggal</th>
-                  <th className="px-4 py-3">Obat / Golongan</th>
-                  <th className="px-4 py-3">Pasien / Dokter</th>
-                  <th className="px-4 py-3">Resep</th>
-                  <th className="px-4 py-3 text-right">Jumlah</th>
-                  <th className="px-4 py-3">Apoteker</th>
-                  {canDelete && <th className="px-4 py-3" />}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filtered.map((l) => (
-                  <tr key={l.id} className="align-top hover:bg-gray-50/50">
-                    <td className="px-4 py-3 text-gray-600">{fmtDate(l.dispensed_at)}</td>
-                    <td className="px-4 py-3">
-                      <div className="font-semibold text-gray-900">{l.medicine_name}</div>
-                      <span className={`mt-0.5 inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${CLASS_CLS[l.drug_class] ?? 'bg-gray-100 text-gray-600'}`}>
+        </div>
+      ) : (
+        <>
+          {/* Desktop: tabel */}
+          <div className="hidden overflow-hidden rounded-2xl border border-gray-100 bg-white apple-shadow lg:block">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 bg-gray-50 text-left text-xs font-bold uppercase tracking-wider text-gray-500">
+                    <th className="px-4 py-3">Tanggal</th>
+                    <th className="px-4 py-3">Obat / Golongan</th>
+                    <th className="px-4 py-3">Pasien / Dokter</th>
+                    <th className="px-4 py-3">Resep</th>
+                    <th className="px-4 py-3 text-right">Jumlah</th>
+                    <th className="px-4 py-3">Apoteker</th>
+                    {canDelete && <th className="px-4 py-3" />}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {filtered.map((l) => (
+                    <tr key={l.id} className="align-top hover:bg-gray-50/50">
+                      <td className="px-4 py-3 text-gray-600">{fmtDate(l.dispensed_at)}</td>
+                      <td className="px-4 py-3">
+                        <div className="font-semibold text-gray-900">{l.medicine_name}</div>
+                        <span className={`mt-0.5 inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${CLASS_CLS[l.drug_class] ?? 'bg-gray-100 text-gray-600'}`}>
+                          {CLASS_LABEL[l.drug_class] ?? l.drug_class}
+                        </span>
+                        {l.batch_number && <div className="mt-0.5 text-xs text-gray-400">Batch {l.batch_number}</div>}
+                      </td>
+                      <td className="px-4 py-3 text-gray-700">
+                        <div>{l.patient_name}{l.patient_id ? <span className="text-gray-400"> · {l.patient_id}</span> : ''}</div>
+                        {l.doctor_name && <div className="text-xs text-gray-400">dr. {l.doctor_name}</div>}
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {l.prescription_no || '—'}
+                        {l.clinic_name && <div className="text-xs text-gray-400">{l.clinic_name}</div>}
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold tabular-nums text-gray-900">{l.quantity}{l.unit ? ` ${l.unit}` : ''}</td>
+                      <td className="px-4 py-3 text-gray-500">{l.dispensed_by_name ?? '—'}</td>
+                      {canDelete && (
+                        <td className="px-4 py-3 text-right">
+                          <button onClick={() => { if (confirm('Hapus catatan logbook ini?')) remove(l.id) }} disabled={pending} className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-40" aria-label="Hapus">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Mobile: kartu (fallback tabel) */}
+          <div className="space-y-3 lg:hidden">
+            {filtered.map((l) => (
+              <div key={l.id} className="rounded-2xl border border-gray-100 bg-white p-4 apple-shadow">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="font-semibold text-gray-900">{l.medicine_name}</div>
+                    <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${CLASS_CLS[l.drug_class] ?? 'bg-gray-100 text-gray-600'}`}>
                         {CLASS_LABEL[l.drug_class] ?? l.drug_class}
                       </span>
-                      {l.batch_number && <div className="mt-0.5 text-xs text-gray-400">Batch {l.batch_number}</div>}
-                    </td>
-                    <td className="px-4 py-3 text-gray-700">
-                      <div>{l.patient_name}{l.patient_id ? <span className="text-gray-400"> · {l.patient_id}</span> : ''}</div>
-                      {l.doctor_name && <div className="text-xs text-gray-400">dr. {l.doctor_name}</div>}
-                    </td>
-                    <td className="px-4 py-3 text-gray-600">
+                      {l.batch_number && <span className="text-xs text-gray-400">Batch {l.batch_number}</span>}
+                    </div>
+                  </div>
+                  {canDelete && (
+                    <button onClick={() => { if (confirm('Hapus catatan logbook ini?')) remove(l.id) }} disabled={pending} className="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-40" aria-label="Hapus">
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+                <div className="mt-3 space-y-2 border-t border-gray-100 pt-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-gray-400">Tanggal</span>
+                    <span className="text-right text-sm text-gray-800">{fmtDate(l.dispensed_at)}</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-gray-400">Pasien / Dokter</span>
+                    <span className="text-right text-sm text-gray-800">
+                      <span>{l.patient_name}{l.patient_id ? <span className="text-gray-400"> · {l.patient_id}</span> : ''}</span>
+                      {l.doctor_name && <span className="block text-xs text-gray-400">dr. {l.doctor_name}</span>}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-gray-400">Resep</span>
+                    <span className="text-right text-sm text-gray-800">
                       {l.prescription_no || '—'}
-                      {l.clinic_name && <div className="text-xs text-gray-400">{l.clinic_name}</div>}
-                    </td>
-                    <td className="px-4 py-3 text-right font-semibold tabular-nums text-gray-900">{l.quantity}{l.unit ? ` ${l.unit}` : ''}</td>
-                    <td className="px-4 py-3 text-gray-500">{l.dispensed_by_name ?? '—'}</td>
-                    {canDelete && (
-                      <td className="px-4 py-3 text-right">
-                        <button onClick={() => { if (confirm('Hapus catatan logbook ini?')) remove(l.id) }} disabled={pending} className="rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-40" aria-label="Hapus">
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      {l.clinic_name && <span className="block text-xs text-gray-400">{l.clinic_name}</span>}
+                    </span>
+                  </div>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-gray-400">Jumlah</span>
+                    <span className="text-right text-sm font-semibold tabular-nums text-gray-900">{l.quantity}{l.unit ? ` ${l.unit}` : ''}</span>
+                  </div>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="shrink-0 text-[11px] font-bold uppercase tracking-wider text-gray-400">Apoteker</span>
+                    <span className="text-right text-sm text-gray-800">{l.dispensed_by_name ?? '—'}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </>
+      )}
 
       {showAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => !pending && setShowAdd(false)}>

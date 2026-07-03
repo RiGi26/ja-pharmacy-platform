@@ -20,7 +20,8 @@ export function TopMedicinesTable({ data }: Props) {
   }
 
   return (
-    <div className="overflow-x-auto">
+    <>
+    <div className="overflow-x-auto hidden lg:block">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-gray-100">
@@ -49,5 +50,37 @@ export function TopMedicinesTable({ data }: Props) {
         </tbody>
       </table>
     </div>
+
+    {/* Mobile fallback: kartu ringan (nested di Card induk, tanpa bg/shadow) */}
+    <div className="lg:hidden space-y-2">
+      {data.map((row, i) => {
+        const grossProfit = row.revenue - row.hpp * row.quantity
+        return (
+          <div key={row.id} className="rounded-xl border border-gray-100 p-3">
+            <div className="flex items-start justify-between gap-2">
+              <p className="font-semibold text-gray-900">{row.name}</p>
+              <span className="shrink-0 text-gray-400 font-mono text-xs">#{i + 1}</span>
+            </div>
+            <div className="mt-2 space-y-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Qty</span>
+                <span className="text-sm text-gray-800">{row.quantity.toLocaleString('id-ID')}</span>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Pendapatan</span>
+                <span className="text-sm font-semibold text-gray-800">{formatCurrency(row.revenue)}</span>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">Laba Kotor</span>
+                <span className={`text-sm font-semibold ${grossProfit >= 0 ? 'text-emerald-600' : 'text-red-500'}`}>
+                  {formatCurrency(grossProfit)}
+                </span>
+              </div>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+    </>
   )
 }
