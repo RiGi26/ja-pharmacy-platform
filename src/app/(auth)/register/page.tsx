@@ -18,6 +18,7 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPw, setShowPw] = useState(false)
   const [agreed, setAgreed] = useState(false)
 
@@ -43,6 +44,7 @@ export default function RegisterPage() {
     if (!adminName.trim()) return 'Nama admin wajib diisi'
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) return 'Email tidak valid'
     if (password.length < 8) return 'Password minimal 8 karakter'
+    if (password !== confirmPassword) return 'Password tidak cocok'
     if (!agreed) return 'Anda harus menyetujui syarat & ketentuan'
     return ''
   }
@@ -91,13 +93,22 @@ export default function RegisterPage() {
 
         <div className="bg-white rounded-2xl p-6 border border-black/[0.04] shadow-sm">
           <div className="mb-4">
-            <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full mb-3">
-              <Check size={12} strokeWidth={3} />
-              {subscribe && tierLabel ? `Berlangganan paket ${tierLabel}` : 'Gratis 14 hari — tanpa kartu kredit'}
-            </span>
-            <h2 className="text-xl font-black text-gray-900 mb-0.5">Daftarkan Apotek Anda</h2>
+            {subscribe ? (
+              <span className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-[#0071E3] text-xs font-bold px-3 py-1.5 rounded-full mb-3">
+                <Check size={12} strokeWidth={3} />
+                Belum siap bayar? Akun tetap mendapat trial 14 hari.
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full mb-3">
+                <Check size={12} strokeWidth={3} />
+                Gratis 14 hari — tanpa kartu kredit
+              </span>
+            )}
+            <h2 className="text-xl font-black text-gray-900 mb-0.5">
+              {subscribe ? `Berlangganan ${tierLabel ?? ''}`.trim() : 'Daftar & Mulai Trial'}
+            </h2>
             <p className="text-xs text-gray-400">
-              {subscribe ? 'Buat akun apotek Anda, lalu lanjut ke pembayaran.' : 'Isi data di bawah, apotek Anda langsung aktif.'}
+              {subscribe ? 'Isi data bisnis, lalu lanjut ke pembayaran' : 'Isi data bisnis, akun langsung aktif.'}
             </p>
           </div>
 
@@ -110,45 +121,52 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
-              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Apotek *</label>
-              <input value={namaApotek} onChange={(e) => { setNamaApotek(e.target.value); setError('') }} placeholder="Apotek Sehat Sentosa" className={INPUT_CLS} />
+              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Bisnis *</label>
+              <input value={namaApotek} onChange={(e) => { setNamaApotek(e.target.value); setError('') }} placeholder="Contoh: Bakso Tini Japan" className={INPUT_CLS} />
             </div>
             <div>
-              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Lengkap Admin *</label>
-              <input value={adminName} onChange={(e) => setAdminName(e.target.value)} placeholder="Nama Anda" className={INPUT_CLS} />
-            </div>
-            <div>
-              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">No. WhatsApp</label>
-              <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="08123456789" className={INPUT_CLS} />
+              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Nama Admin / PIC *</label>
+              <input value={adminName} onChange={(e) => setAdminName(e.target.value)} placeholder="Nama lengkap Anda" className={INPUT_CLS} />
             </div>
             <div>
               <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Email *</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@apotek.com" className={INPUT_CLS} autoComplete="email" />
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@bisnis.jp" className={INPUT_CLS} autoComplete="email" />
             </div>
             <div>
-              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Password * (min 8 karakter)</label>
+              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">No. WhatsApp (opsional)</label>
+              <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="62812xxxxxxx" className={INPUT_CLS} />
+            </div>
+            <div>
+              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Password *</label>
               <div className="relative">
-                <input type={showPw ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className={`${INPUT_CLS} pr-12`} autoComplete="new-password" />
+                <input type={showPw ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Minimal 8 karakter" className={`${INPUT_CLS} pr-12`} autoComplete="new-password" />
                 <button type="button" onClick={() => setShowPw((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                   {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
+            <div>
+              <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Konfirmasi Password *</label>
+              <input type={showPw ? 'text' : 'password'} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Ulangi password" className={INPUT_CLS} autoComplete="new-password" />
+              {confirmPassword && confirmPassword !== password && (
+                <p className="mt-1 text-xs text-red-600">Password tidak cocok</p>
+              )}
+            </div>
             <label className="flex items-start gap-3 cursor-pointer">
               <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#0071E3] flex-shrink-0" />
               <span className="text-xs text-gray-500">
-                Saya setuju dengan <span className="text-[#0071E3] font-bold">syarat & ketentuan</span> penggunaan Webzoka Farmasi
+                Saya setuju dengan <span className="text-[#0071E3] font-bold">syarat & ketentuan</span> penggunaan Webzoka.
               </span>
             </label>
             <button type="submit" disabled={loading} className="w-full py-3.5 rounded-xl bg-[#0071E3] hover:bg-[#005BB5] text-white font-bold text-sm disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors active:scale-[0.98]">
               {loading ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" /> Mendaftarkan...
+                  <Loader2 size={16} className="animate-spin" /> Memproses...
                 </>
               ) : subscribe ? (
-                'Lanjut ke Pembayaran →'
+                'Daftar & Lanjut Bayar →'
               ) : (
-                'Daftarkan Apotek'
+                'Daftar & Mulai Trial →'
               )}
             </button>
           </form>
@@ -157,7 +175,7 @@ export default function RegisterPage() {
             <p className="text-xs text-gray-400">
               Sudah punya akun?{' '}
               <Link href="/login" className="font-bold text-[#0071E3] hover:underline">
-                Login di sini →
+                Masuk di sini
               </Link>
             </p>
           </div>
