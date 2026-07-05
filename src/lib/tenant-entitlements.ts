@@ -45,17 +45,29 @@ export const getTenantEntitlements = cache(async (tenantId: string): Promise<Ten
   const db = await createAdminClient()
   const { data } = await db
     .from('tenant_entitlements')
-    .select('tier, entitlements, max_active_users, status')
+    .select('tier, entitlements, max_active_users, status, expires_at')
     .eq('tenant_id', tenantId)
     .maybeSingle()
 
   if (!data) return LEGACY
 
+  // Enforce trial expiry locally (audit 2026-07-05): a lapsed trial must not keep
+  // granting features while waiting on a Core status push. Only a trial/trialing row
+  // with a past expires_at is downgraded to 'expired'; active/paid/legacy untouched.
+  let status = (data.status as string) ?? 'active'
+  if (
+    (status === 'trial' || status === 'trialing') &&
+    data.expires_at &&
+    new Date(data.expires_at as string) < new Date()
+  ) {
+    status = 'expired'
+  }
+
   return {
     tier: (data.tier as string) ?? null,
     entitlements: (data.entitlements as EntitlementKey[]) ?? [],
     maxActiveUsers: (data.max_active_users as number | null) ?? null,
-    status: (data.status as string) ?? 'active',
+    status,
   }
 })
 
