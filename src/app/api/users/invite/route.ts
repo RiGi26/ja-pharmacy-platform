@@ -24,6 +24,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
+  // Role allow-list (audit 2026-07-05): never trust the requested `role` from the
+  // client. 'superadmin' is a GLOBAL role — RLS on every table is `is_superadmin()
+  // OR tenant_id = get_tenant_id()`, and the access-token hook copies user_profiles.role
+  // into the JWT — so a tenant owner who could assign 'superadmin' would gain full
+  // cross-tenant read/write. A non-superadmin caller may only invite operational
+  // tenant roles; assigning 'owner' requires a superadmin; 'superadmin' is never
+  // mintable from this tenant-scoped endpoint.
+  const invitableRoles =
+    profile.role === 'superadmin'
+      ? ['owner', 'admin', 'apoteker', 'kasir']
+      : ['admin', 'apoteker', 'kasir']
+  if (!invitableRoles.includes(role)) {
+    return NextResponse.json({ error: 'Peran yang diminta tidak diizinkan' }, { status: 403 })
+  }
+
   // Tier gate: enforce the per-tier staff/kasir seat quota (1 / 3 / ∞). Legacy
   // tenants (no entitlement row) and Pro are unlimited — behaviour-preserving.
   const seatGuard = await guardKasirSeat(tenant_id)
