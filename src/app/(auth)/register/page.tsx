@@ -38,6 +38,9 @@ export default function RegisterPage() {
   }, [])
 
   const tierLabel = tierLabelOf(tier)
+  // Only a valid tier counts as a paid subscribe; a missing/unknown tier falls back
+  // to the trial copy + flow (mirrors the LMS baseline). Guards a bare "Berlangganan".
+  const subscribing = subscribe && !!tierLabel
 
   function validate(): string {
     if (namaApotek.trim().length < 3) return 'Nama apotek minimal 3 karakter'
@@ -72,7 +75,7 @@ export default function RegisterPage() {
       }
       // Paid signup → straight to Midtrans checkout (the API already auto-logged in,
       // so the session cookie is set). Keep loading while the browser navigates away.
-      if (subscribe && tier) {
+      if (subscribing && tier) {
         window.location.assign(`/api/billing/checkout?tier=${encodeURIComponent(tier)}&period=${period}`)
         return
       }
@@ -87,29 +90,28 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-black text-gray-900">Webzoka</h1>
-          <p className="text-xs font-bold uppercase tracking-widest text-[#0071E3] mt-1">Portal Farmasi</p>
+          <img src="/logo-rocket.png" alt="Logo Webzoka" className="mx-auto h-14 w-14 object-contain" />
         </div>
 
         <div className="bg-white rounded-2xl p-6 border border-black/[0.04] shadow-sm">
           <div className="mb-4">
-            {subscribe ? (
-              <span className="inline-flex items-center gap-1 bg-blue-50 border border-blue-200 text-[#0071E3] text-xs font-bold px-3 py-1.5 rounded-full mb-3">
-                <Check size={12} strokeWidth={3} />
-                Belum siap bayar? Akun tetap mendapat trial 14 hari.
-              </span>
-            ) : (
+            {!subscribing && (
               <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full mb-3">
                 <Check size={12} strokeWidth={3} />
                 Gratis 14 hari — tanpa kartu kredit
               </span>
             )}
             <h2 className="text-xl font-black text-gray-900 mb-0.5">
-              {subscribe ? `Berlangganan ${tierLabel ?? ''}`.trim() : 'Daftar & Mulai Trial'}
+              {subscribing ? `Berlangganan ${tierLabel}` : 'Daftar & Mulai Trial'}
             </h2>
             <p className="text-xs text-gray-400">
-              {subscribe ? 'Isi data bisnis, lalu lanjut ke pembayaran' : 'Isi data bisnis, akun langsung aktif.'}
+              {subscribing ? 'Isi data bisnis, lalu lanjut ke pembayaran' : 'Isi data bisnis, akun langsung aktif.'}
             </p>
+            {subscribing && (
+              <p className="mt-3 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">
+                Belum siap bayar? Akun tetap mendapat trial 14 hari.
+              </p>
+            )}
           </div>
 
           {error && (
