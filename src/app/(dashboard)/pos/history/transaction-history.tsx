@@ -34,15 +34,12 @@ type ModalState =
   | { type: 'void-approve'; tx: Transaction }
   | null
 
-export function TransactionHistory({ transactions, totalPages, page, date, canApproveVoid, tenantId, userId }: Props) {
+export function TransactionHistory({ transactions, totalPages, page, date, canApproveVoid, tenantId }: Props) {
   const router = useRouter()
   const pathname = usePathname()
   const [modal, setModal] = useState<ModalState>(null)
   const [voidReason, setVoidReason] = useState('')
-  const [pin, setPin] = useState('')
   const [loading, setLoading] = useState(false)
-
-  const VOID_PIN = '1234' // TODO: per-tenant PIN dari settings
 
   async function handleVoidRequest(tx: Transaction) {
     if (!voidReason.trim()) { toast.error('Alasan void wajib diisi'); return }
@@ -67,44 +64,23 @@ export function TransactionHistory({ transactions, totalPages, page, date, canAp
   }
 
   async function handleVoidApprove(tx: Transaction) {
-    if (pin !== VOID_PIN) { toast.error('PIN salah'); return }
     setLoading(true)
-    const supabase = createClient()
 
-    // Rollback stok
-    const items = tx.transaction_items ?? []
-    for (const item of items) {
-      const { data: batch } = await supabase
-        .from('medicine_batches')
-        .select('quantity, status')
-        .eq('id', item.batch_id)
-        .single()
-
-      if (batch) {
-        const newQty = batch.quantity + item.quantity
-        await supabase.from('medicine_batches').update({
-          quantity: newQty,
-          status: batch.status === 'EMPTY' ? 'LAYAK_JUAL' : batch.status,
-        }).eq('id', item.batch_id)
-
-        await supabase.from('stock_movements').insert({
-          tenant_id: tenantId,
-          medicine_id: item.medicine_id,
-          batch_id: item.batch_id,
-          type: 'VOID_ROLLBACK',
-          quantity: item.quantity,
-          ref_id: tx.id,
-          ref_type: 'transaction',
-          note: `Void transaksi ${tx.invoice_number}`,
-          created_by: userId,
-        })
-      }
+    // Authorization + stock rollback run SERVER-SIDE (audit 2026-07-05): void is a
+    // financial-integrity action gated by the caller's role (Owner/Admin) on the
+    // server, not by a shared client-side PIN. The route restocks + marks the
+    // transaction VOIDED atomically under the service role.
+    const res = await fetch('/api/pos/void-approve', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transactionId: tx.id }),
+    })
+    const data = (await res.json().catch(() => ({}))) as { error?: string }
+    if (!res.ok) {
+      toast.error(data?.error || 'Gagal menyetujui void')
+      setLoading(false)
+      return
     }
-
-    await supabase.from('transactions').update({
-      status: 'VOIDED',
-      void_by: userId,
-    }).eq('id', tx.id)
 
     await fetch('/api/notifications/void-approved', {
       method: 'POST',
@@ -114,7 +90,6 @@ export function TransactionHistory({ transactions, totalPages, page, date, canAp
 
     toast.success(`Transaksi ${tx.invoice_number} berhasil di-void, stok dikembalikan`)
     setModal(null)
-    setPin('')
     setLoading(false)
     router.refresh()
   }
@@ -258,15 +233,10 @@ export function TransactionHistory({ transactions, totalPages, page, date, canAp
             <p className="text-sm font-medium text-amber-800">{modal.tx.invoice_number}</p>
             <p className="text-xs text-amber-600 mt-0.5">Alasan: {modal.tx.void_reason}</p>
           </div>
-          <label className="block text-xs font-semibold text-gray-500 mb-1.5">PIN Konfirmasi *</label>
-          <Input
-            type="password"
-            placeholder="••••"
-            value={pin}
-            onChange={e => setPin(e.target.value)}
-            maxLength={6}
-            className="mb-4 text-center tracking-widest text-lg"
-          />
+          <p className="text-sm text-gray-500 mb-4">
+            Menyetujui akan mengembalikan stok dan menandai transaksi ini VOID.
+            Hanya Owner/Admin yang dapat menyetujui.
+          </p>
           <Button onClick={() => handleVoidApprove(modal.tx)} disabled={loading} className="w-full">
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
             Approve & Rollback Stok
