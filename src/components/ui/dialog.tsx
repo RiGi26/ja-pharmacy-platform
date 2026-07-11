@@ -18,15 +18,23 @@ export function DialogContent({
   className,
   children,
   showClose = true,
+  sheet = false,
   ...props
-}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { showClose?: boolean }) {
+}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { showClose?: boolean; sheet?: boolean }) {
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm animate-fade-in" />
       <DialogPrimitive.Content
         className={cn(
-          'fixed left-1/2 top-1/2 z-[100] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2',
-          'rounded-3xl border border-black/5 bg-white p-6 shadow-2xl focus:outline-none',
+          'fixed z-[100] max-h-[85vh] overflow-y-auto',
+          sheet
+            ? [
+                'inset-x-0 bottom-0 w-full rounded-t-3xl rounded-b-none border-t border-black/5 bg-white p-6 shadow-2xl focus:outline-none',
+                'pb-[max(1.5rem,env(safe-area-inset-bottom))] animate-sheet',
+                'sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-1/2 sm:w-[calc(100%-2rem)] sm:max-w-md sm:-translate-x-1/2 sm:-translate-y-1/2',
+                'sm:rounded-3xl sm:border sm:pb-6',
+              ]
+            : 'left-1/2 top-1/2 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-black/5 bg-white p-6 shadow-2xl focus:outline-none',
           className
         )}
         {...props}
