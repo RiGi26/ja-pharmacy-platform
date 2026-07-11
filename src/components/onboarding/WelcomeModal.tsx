@@ -8,6 +8,8 @@ import type { OnboardingTrack } from '@/lib/onboarding/steps'
 // ============================================================
 // WelcomeModal — one-time first-run greeting (Orient phase). Role-based copy.
 // Presentational only: parent (OnboardingLauncher) owns open state + persistence.
+// Outside-click dismiss is disabled: first-run only closes via a conscious
+// choice (button or Escape), not an accidental overlay misclick.
 // ============================================================
 
 interface WelcomeModalProps {
@@ -45,7 +47,12 @@ export function WelcomeModal({ open, onOpenChange, track, userName, onStartTour,
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showClose={false}>
+      <DialogContent
+        showClose={false}
+        sheet
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         {/* Icon badge */}
         <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600/10">
           <Sparkles className="h-6 w-6 text-blue-600" strokeWidth={2} />
