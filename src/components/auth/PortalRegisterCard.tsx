@@ -36,6 +36,8 @@ export type PortalRegisterCardProps = {
   planLabel?: string
   /** Target footer "Masuk di sini" (mis. /auth/login atau /login, boleh bawa ?next=). */
   loginHref: string
+  /** Contoh nama bisnis di placeholder — isi sesuai vertikal portal (mis. "Contoh: Apotek Sumber Waras"). */
+  businessPlaceholder?: string
   /**
    * Provisioning milik tiap portal. Saat sukses, lakukan redirect DI SINI dan
    * kembalikan void. Untuk menampilkan banner error (akun belum dibuat), kembalikan
@@ -50,6 +52,7 @@ export function PortalRegisterCard({
   subscribe,
   planLabel,
   loginHref,
+  businessPlaceholder = 'Contoh: Toko Sejahtera',
   onSubmit,
 }: PortalRegisterCardProps) {
   const [businessName, setBusinessName]   = useState('')
@@ -100,9 +103,9 @@ export function PortalRegisterCard({
   }
 
   const inputCls =
-    'w-full px-4 py-3.5 bg-gray-50/50 border border-black/5 rounded-2xl text-[15px] text-[#1D1D1F] ' +
+    'w-full px-4 py-3.5 bg-gray-50/50 border border-black/5 rounded-2xl text-base text-[#1D1D1F] ' +
     'placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 focus:bg-white transition-all'
-  const labelCls = 'block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1'
+  const labelCls = 'block text-[11px] font-bold text-gray-600 uppercase tracking-widest mb-2 ml-1'
 
   return (
     <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center p-6 relative overflow-hidden">
@@ -153,7 +156,7 @@ export function PortalRegisterCard({
             <div>
               <label htmlFor="reg-business" className={labelCls}>Nama Bisnis</label>
               <input id="reg-business" type="text" value={businessName} onChange={e => setBusinessName(e.target.value)}
-                required minLength={3} placeholder="Contoh: Bakso Tini Japan" className={inputCls} />
+                required minLength={3} placeholder={businessPlaceholder} className={inputCls} />
             </div>
 
             <div>
@@ -170,7 +173,7 @@ export function PortalRegisterCard({
 
             <div>
               <label htmlFor="reg-wa" className={labelCls}>
-                No. WhatsApp <span className="normal-case text-gray-300">(opsional)</span>
+                No. WhatsApp <span className="normal-case text-gray-500">(opsional)</span>
               </label>
               <input id="reg-wa" type="tel" value={whatsapp} onChange={e => setWhatsapp(e.target.value)}
                 autoComplete="tel" placeholder="62812xxxxxxx" className={inputCls} />
@@ -184,7 +187,7 @@ export function PortalRegisterCard({
                   autoComplete="new-password" placeholder="Minimal 8 karakter" className={inputCls + ' pr-12'} />
                 <button type="button" onClick={() => setShowPassword(v => !v)}
                   aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                  className="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors">
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
@@ -201,7 +204,7 @@ export function PortalRegisterCard({
 
             <label className="flex items-start gap-2.5 text-sm text-gray-600 pt-1">
               <input type="checkbox" checked={agree} onChange={e => setAgree(e.target.checked)} required
-                className="mt-0.5 h-4 w-4 rounded border-gray-300 accent-[#0071E3]" />
+                className="mt-0.5 h-5 w-5 flex-shrink-0 rounded border-gray-300 accent-[#0071E3]" />
               <span>Saya setuju dengan syarat &amp; ketentuan penggunaan Webzoka.</span>
             </label>
 

@@ -30,6 +30,8 @@ export type PortalLoginCardProps = {
   initialNotice?: string | null
   /** Entri demo: `href` (rute seperti /demo) ATAU `onClick` (handler auth demo) */
   demo?: { href?: string; onClick?: () => void | Promise<void> }
+  /** Rute halaman daftar; semua portal memakai /register */
+  registerHref?: string
 }
 
 export function PortalLoginCard({
@@ -38,6 +40,7 @@ export function PortalLoginCard({
   onSubmit,
   initialNotice,
   demo,
+  registerHref = '/register',
 }: PortalLoginCardProps) {
   const [email, setEmail]               = useState('')
   const [password, setPassword]         = useState('')
@@ -76,6 +79,9 @@ export function PortalLoginCard({
 
   const showNotice = !error && !!initialNotice
 
+  // Belum ada alur reset password self-service di portal mana pun — jalur resmi = admin via WA.
+  const waForgotHref = `${WA_HREF}?text=${encodeURIComponent(`Halo Admin, saya lupa password akun portal ${portalLabel}. Mohon bantu reset.`)}`
+
   return (
     <div className="min-h-screen bg-[#F5F5F7] flex items-center justify-center p-6 relative overflow-hidden">
       {/* Background decor */}
@@ -110,7 +116,7 @@ export function PortalLoginCard({
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="login-email" className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">
+              <label htmlFor="login-email" className="block text-[11px] font-bold text-gray-600 uppercase tracking-widest mb-2 ml-1">
                 Alamat Email
               </label>
               <input
@@ -121,14 +127,20 @@ export function PortalLoginCard({
                 required
                 autoComplete="email"
                 placeholder="email@kamu.com"
-                className="w-full px-4 py-3.5 bg-gray-50/50 border border-black/5 rounded-2xl text-[15px] text-[#1D1D1F] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 focus:bg-white transition-all"
+                className="w-full px-4 py-3.5 bg-gray-50/50 border border-black/5 rounded-2xl text-base text-[#1D1D1F] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 focus:bg-white transition-all"
               />
             </div>
 
             <div>
-              <label htmlFor="login-password" className="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">
-                Kata Sandi
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label htmlFor="login-password" className="block text-[11px] font-bold text-gray-600 uppercase tracking-widest ml-1">
+                  Kata Sandi
+                </label>
+                <a href={waForgotHref} target="_blank" rel="noopener noreferrer"
+                  className="text-[11px] font-bold text-[#0071E3] hover:text-blue-700 transition-colors mr-1">
+                  Lupa password?
+                </a>
+              </div>
               <div className="relative">
                 <input
                   id="login-password"
@@ -138,13 +150,13 @@ export function PortalLoginCard({
                   required
                   autoComplete="current-password"
                   placeholder="••••••••"
-                  className="w-full px-4 py-3.5 bg-gray-50/50 border border-black/5 rounded-2xl text-[15px] text-[#1D1D1F] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 focus:bg-white transition-all pr-12"
+                  className="w-full px-4 py-3.5 bg-gray-50/50 border border-black/5 rounded-2xl text-base text-[#1D1D1F] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0071E3]/20 focus:bg-white transition-all pr-12"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(v => !v)}
                   aria-label={showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -168,8 +180,14 @@ export function PortalLoginCard({
             </div>
           </form>
 
-          {/* Footer minimal seragam: Coba Demo + Chat Admin WA */}
+          {/* Footer minimal seragam: Daftar + Coba Demo + Chat Admin WA */}
           <div className="mt-8 pt-6 border-t border-black/5 text-center space-y-2">
+            <p className="text-sm text-gray-500">
+              Belum punya akun?{' '}
+              <a href={registerHref} className="font-bold text-[#0071E3] hover:text-blue-700 transition-colors">
+                Daftar Gratis →
+              </a>
+            </p>
             {demo && (
               <p className="text-sm text-gray-500">
                 Ingin coba dulu?{' '}
