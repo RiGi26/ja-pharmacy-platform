@@ -47,6 +47,7 @@ function RegisterForm() {
     <PortalRegisterCard
       subLabel="APOTEK PORTAL"
       portalLabel="Webzoka Apotek"
+      businessPlaceholder="Contoh: Apotek Sumber Waras"
       subscribe={subscribing}
       planLabel={planLabel}
       loginHref="/login"
