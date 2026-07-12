@@ -14,7 +14,7 @@ export default async function PosPage() {
     .single()
   if (!profile) redirect('/login')
 
-  const canAccess = ['superadmin', 'admin', 'apoteker', 'kasir'].includes(profile.role)
+  const canAccess = ['superadmin', 'owner', 'admin', 'apoteker', 'kasir'].includes(profile.role)
   if (!canAccess) redirect('/dashboard')
 
   return (

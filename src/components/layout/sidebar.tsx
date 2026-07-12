@@ -26,7 +26,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Obat',           href: '/medicines',      icon: Pill,            roles: ['superadmin','owner','admin','apoteker'] },
   { label: 'Inventori',      href: '/inventory',      icon: Package,         roles: ['superadmin','owner','admin','apoteker'] },
   { label: 'Monitoring Exp.', href: '/expiry',        icon: AlertTriangle,   roles: ['superadmin','owner','admin','apoteker'], ent: 'expiry_monitoring' },
-  { label: 'Kasir (POS)',    href: '/pos',            icon: ShoppingCart,    roles: ['superadmin','admin','apoteker','kasir'] },
+  { label: 'Kasir (POS)',    href: '/pos',            icon: ShoppingCart,    roles: ['superadmin','owner','admin','apoteker','kasir'] },
   { label: 'Resep',          href: '/prescriptions',  icon: FileText,        roles: ['superadmin','admin','apoteker'], ent: 'prescription' },
   { label: 'Stok Opname',    href: '/stock-opname',   icon: ClipboardList,   roles: ['superadmin','admin','apoteker'], ent: 'stock_opname' },
   { label: 'Retur & Musnah', href: '/disposals',      icon: Recycle,         roles: ['superadmin','admin','apoteker'], ent: 'disposals' },

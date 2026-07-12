@@ -185,11 +185,12 @@ export default async function DashboardPage({
               {[
                 // tour: same data-tour keys as the sidebar — on mobile the sidebar is
                 // off-screen, so the tour anchors to these cards instead.
-                { label: 'Buka Kasir', href: '/pos', icon: ShoppingCart, color: 'bg-blue-50 text-blue-700 hover:bg-blue-100', tour: 'nav-pos' },
-                { label: 'Input Stok', href: '/inventory/stock-in', icon: Package, color: 'bg-purple-50 text-purple-700 hover:bg-purple-100', tour: 'nav-inventory' },
-                { label: 'Cek Resep', href: '/prescriptions', icon: FileText, color: 'bg-green-50 text-green-700 hover:bg-green-100', tour: undefined },
-                { label: 'Monitoring Exp', href: '/expiry', icon: AlertTriangle, color: 'bg-amber-50 text-amber-700 hover:bg-amber-100', tour: undefined },
-              ].map(action => (
+                // roles: mirror role guard tiap halaman tujuan — jangan render aksi yang bakal di-redirect balik.
+                { label: 'Buka Kasir', href: '/pos', icon: ShoppingCart, color: 'bg-blue-50 text-blue-700 hover:bg-blue-100', tour: 'nav-pos', roles: ['superadmin', 'owner', 'admin', 'apoteker', 'kasir'] },
+                { label: 'Input Stok', href: '/inventory/stock-in', icon: Package, color: 'bg-purple-50 text-purple-700 hover:bg-purple-100', tour: 'nav-inventory', roles: ['superadmin', 'owner', 'admin', 'apoteker'] },
+                { label: 'Cek Resep', href: '/prescriptions', icon: FileText, color: 'bg-green-50 text-green-700 hover:bg-green-100', tour: undefined, roles: ['superadmin', 'admin', 'apoteker'] },
+                { label: 'Monitoring Exp', href: '/expiry', icon: AlertTriangle, color: 'bg-amber-50 text-amber-700 hover:bg-amber-100', tour: undefined, roles: ['superadmin', 'owner', 'admin', 'apoteker'] },
+              ].filter(action => action.roles.includes(profile.role)).map(action => (
                 <a
                   key={action.href}
                   href={action.href}
