@@ -5,6 +5,7 @@ import { UpsellBanner } from '@/components/shared/upsell-banner'
 import { OnboardingChecklist } from '@/components/onboarding/OnboardingChecklist'
 import { getOnboardingState } from '@/lib/onboarding/state'
 import { StatCard } from '@/components/shared/stat-card'
+import { Greeting } from '@/components/shared/greeting'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { BatchStatusBadge } from '@/components/shared/batch-status-badge'
@@ -76,9 +77,6 @@ export default async function DashboardPage({
   const expiryAlerts = expiryResult.data ?? []
   const pendingRx = prescriptionResult.count ?? 0
 
-  const hour = new Date().getHours()
-  const greeting = hour < 12 ? 'Selamat pagi' : hour < 17 ? 'Selamat siang' : 'Selamat malam'
-
   // Shares one computation with the dashboard layout via React cache().
   const onboarding = await getOnboardingState()
 
@@ -86,7 +84,7 @@ export default async function DashboardPage({
     <div className="p-6 max-w-6xl mx-auto">
       <UpsellBanner upsell={upsell} billing={billing} />
       <PageHeader
-        title={`${greeting}, ${profile.full_name.split(' ')[0]} 👋`}
+        title={<><Greeting />, {profile.full_name.split(' ')[0]} 👋</>}
         description="Ringkasan aktivitas apotek hari ini"
       />
 
