@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 import { DataTable } from '@/components/shared/data-table'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -57,13 +56,14 @@ export function UserList({ users: initialUsers, tenantId, currentUserId }: Props
 
   async function toggleActive(u: UserProfile) {
     setLoading(u.id)
-    const supabase = createClient()
-    const { error } = await supabase
-      .from('user_profiles')
-      .update({ is_active: !u.is_active })
-      .eq('id', u.id)
+    const response = await fetch(`/api/users/${u.id}/active`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ active: !u.is_active }),
+    })
+    const result = await response.json()
 
-    if (error) { toast.error(error.message) } else {
+    if (!response.ok) { toast.error(result.error ?? 'Gagal mengubah status pengguna') } else {
       setUsers(prev => prev.map(p => p.id === u.id ? { ...p, is_active: !p.is_active } : p))
       toast.success(u.is_active ? 'Akun dinonaktifkan' : 'Akun diaktifkan')
     }
