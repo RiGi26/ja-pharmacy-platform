@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient, createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { PageHeader } from '@/components/layout/page-header'
 import { UserList } from './user-list'
@@ -9,13 +9,14 @@ export default async function UsersPage() {
   if (!user) redirect('/login')
 
   const { data: profile } = await supabase
-    .from('user_profiles').select('tenant_id, role').eq('user_id', user.id).single()
+    .from('user_profiles').select('tenant_id, role').eq('user_id', user.id).eq('is_active', true).single()
   if (!profile) redirect('/login')
 
   const canAccess = ['superadmin', 'owner'].includes(profile.role)
   if (!canAccess) redirect('/dashboard')
 
-  const { data: users } = await supabase
+  const admin = await createAdminClient()
+  const { data: users } = await admin
     .from('user_profiles')
     .select('id, user_id, full_name, email, role, phone, is_active, created_at')
     .eq('tenant_id', profile.tenant_id)
